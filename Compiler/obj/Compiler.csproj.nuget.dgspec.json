@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\sajmc\\OneDrive\\Documents\\Projects\\RGU\\LANGUAGES-AND-COMPILERS-PRACTICAL\\lab_3_and_onwards\\Compiler\\Compiler.csproj": {}
+    "C:\\Users\\sajmc\\OneDrive\\Documents\\Projects\\RGU\\Course-works\\LANGUAGES-AND-COMPILERS-CW\\Languages-and-Compilers-2022-CM4106-CW\\Compiler\\Compiler.csproj": {}
   },
   "projects": {
-    "C:\\Users\\sajmc\\OneDrive\\Documents\\Projects\\RGU\\LANGUAGES-AND-COMPILERS-PRACTICAL\\lab_3_and_onwards\\Compiler\\Compiler.csproj": {
+    "C:\\Users\\sajmc\\OneDrive\\Documents\\Projects\\RGU\\Course-works\\LANGUAGES-AND-COMPILERS-CW\\Languages-and-Compilers-2022-CM4106-CW\\Compiler\\Compiler.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\sajmc\\OneDrive\\Documents\\Projects\\RGU\\LANGUAGES-AND-COMPILERS-PRACTICAL\\lab_3_and_onwards\\Compiler\\Compiler.csproj",
+        "projectUniqueName": "C:\\Users\\sajmc\\OneDrive\\Documents\\Projects\\RGU\\Course-works\\LANGUAGES-AND-COMPILERS-CW\\Languages-and-Compilers-2022-CM4106-CW\\Compiler\\Compiler.csproj",
         "projectName": "Compiler",
-        "projectPath": "C:\\Users\\sajmc\\OneDrive\\Documents\\Projects\\RGU\\LANGUAGES-AND-COMPILERS-PRACTICAL\\lab_3_and_onwards\\Compiler\\Compiler.csproj",
+        "projectPath": "C:\\Users\\sajmc\\OneDrive\\Documents\\Projects\\RGU\\Course-works\\LANGUAGES-AND-COMPILERS-CW\\Languages-and-Compilers-2022-CM4106-CW\\Compiler\\Compiler.csproj",
         "packagesPath": "C:\\Users\\sajmc\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\sajmc\\OneDrive\\Documents\\Projects\\RGU\\LANGUAGES-AND-COMPILERS-PRACTICAL\\lab_3_and_onwards\\Compiler\\obj\\",
+        "outputPath": "C:\\Users\\sajmc\\OneDrive\\Documents\\Projects\\RGU\\Course-works\\LANGUAGES-AND-COMPILERS-CW\\Languages-and-Compilers-2022-CM4106-CW\\Compiler\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\sajmc\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -38,29 +38,17 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
-          "dependencies": {
-            "Microsoft.NETCore.App": {
-              "target": "Package",
-              "version": "[2.0.0, )"
-            }
-          },
           "imports": [
             "net461",
             "net462",
             "net47",
             "net471",
             "net472",
-            "net48",
-            "net481"
+            "net48"
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "frameworkReferences": {
-            "Microsoft.NETCore.App": {
-              "privateAssets": "all"
-            }
-          },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.412\\RuntimeIdentifierGraph.json"
         }
       }
     }
