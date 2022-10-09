@@ -1,0 +1,13 @@
+C:\Users\sajmc\OneDrive\Documents\Projects\RGU\LANGUAGES-AND-COMPILERS-PRACTICAL\lab_3_and_onwards\Compiler\bin\Debug\netcoreapp2.1\Compiler.deps.json
+C:\Users\sajmc\OneDrive\Documents\Projects\RGU\LANGUAGES-AND-COMPILERS-PRACTICAL\lab_3_and_onwards\Compiler\bin\Debug\netcoreapp2.1\Compiler.runtimeconfig.json
+C:\Users\sajmc\OneDrive\Documents\Projects\RGU\LANGUAGES-AND-COMPILERS-PRACTICAL\lab_3_and_onwards\Compiler\bin\Debug\netcoreapp2.1\Compiler.runtimeconfig.dev.json
+C:\Users\sajmc\OneDrive\Documents\Projects\RGU\LANGUAGES-AND-COMPILERS-PRACTICAL\lab_3_and_onwards\Compiler\bin\Debug\netcoreapp2.1\Compiler.dll
+C:\Users\sajmc\OneDrive\Documents\Projects\RGU\LANGUAGES-AND-COMPILERS-PRACTICAL\lab_3_and_onwards\Compiler\bin\Debug\netcoreapp2.1\Compiler.pdb
+C:\Users\sajmc\OneDrive\Documents\Projects\RGU\LANGUAGES-AND-COMPILERS-PRACTICAL\lab_3_and_onwards\Compiler\obj\Debug\netcoreapp2.1\Compiler.csproj.AssemblyReference.cache
+C:\Users\sajmc\OneDrive\Documents\Projects\RGU\LANGUAGES-AND-COMPILERS-PRACTICAL\lab_3_and_onwards\Compiler\obj\Debug\netcoreapp2.1\Compiler.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\sajmc\OneDrive\Documents\Projects\RGU\LANGUAGES-AND-COMPILERS-PRACTICAL\lab_3_and_onwards\Compiler\obj\Debug\netcoreapp2.1\Compiler.AssemblyInfoInputs.cache
+C:\Users\sajmc\OneDrive\Documents\Projects\RGU\LANGUAGES-AND-COMPILERS-PRACTICAL\lab_3_and_onwards\Compiler\obj\Debug\netcoreapp2.1\Compiler.AssemblyInfo.cs
+C:\Users\sajmc\OneDrive\Documents\Projects\RGU\LANGUAGES-AND-COMPILERS-PRACTICAL\lab_3_and_onwards\Compiler\obj\Debug\netcoreapp2.1\Compiler.csproj.CoreCompileInputs.cache
+C:\Users\sajmc\OneDrive\Documents\Projects\RGU\LANGUAGES-AND-COMPILERS-PRACTICAL\lab_3_and_onwards\Compiler\obj\Debug\netcoreapp2.1\Compiler.dll
+C:\Users\sajmc\OneDrive\Documents\Projects\RGU\LANGUAGES-AND-COMPILERS-PRACTICAL\lab_3_and_onwards\Compiler\obj\Debug\netcoreapp2.1\Compiler.pdb
+C:\Users\sajmc\OneDrive\Documents\Projects\RGU\LANGUAGES-AND-COMPILERS-PRACTICAL\lab_3_and_onwards\Compiler\obj\Debug\netcoreapp2.1\Compiler.genruntimeconfig.cache

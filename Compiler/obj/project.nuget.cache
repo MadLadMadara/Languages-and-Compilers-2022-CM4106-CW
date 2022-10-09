@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "78cdd2KN5l2hxCu8yrWnbcoidwXJlHDjaxzkSNXZluFfNDEBPzky9gOweXW73LbHyWthcoNLWu2gI7zm8lWpNQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\sajmc\\OneDrive\\Documents\\Projects\\RGU\\LANGUAGES-AND-COMPILERS-PRACTICAL\\lab_3_and_onwards\\Compiler\\Compiler.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\sajmc\\.nuget\\packages\\microsoft.netcore.app\\2.0.0\\microsoft.netcore.app.2.0.0.nupkg.sha512",
+    "C:\\Users\\sajmc\\.nuget\\packages\\microsoft.netcore.dotnetapphost\\2.0.0\\microsoft.netcore.dotnetapphost.2.0.0.nupkg.sha512",
+    "C:\\Users\\sajmc\\.nuget\\packages\\microsoft.netcore.dotnethostpolicy\\2.0.0\\microsoft.netcore.dotnethostpolicy.2.0.0.nupkg.sha512",
+    "C:\\Users\\sajmc\\.nuget\\packages\\microsoft.netcore.dotnethostresolver\\2.0.0\\microsoft.netcore.dotnethostresolver.2.0.0.nupkg.sha512",
+    "C:\\Users\\sajmc\\.nuget\\packages\\microsoft.netcore.platforms\\2.0.0\\microsoft.netcore.platforms.2.0.0.nupkg.sha512",
+    "C:\\Users\\sajmc\\.nuget\\packages\\netstandard.library\\2.0.0\\netstandard.library.2.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
