@@ -135,19 +135,15 @@ namespace Compiler.Tokenization
                 }
                 return TokenType.IntLiteral;
 
-            } else if (Reader.Current == '\'') 
+            } else if (Reader.Current == '{') 
             {
                 // consube as char chars literal
-                // TODO: might need to remove the "'" from the consumption
                 TakeIt();
+                if (!IsGraphic(Reader.Current)) return TokenType.Error;
                 TakeIt();
-                if(Reader.Current == '\'')
-                {
-                    TakeIt();
-                    return TokenType.CharLiteral;
-                }
+                if(Reader.Current != '}') return TokenType.Error;
                 TakeIt();
-                return TokenType.Error;
+                return TokenType.CharLiteral;
 
             } else if (IsOperator(Reader.Current))
             {
