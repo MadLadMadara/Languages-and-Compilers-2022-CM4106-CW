@@ -145,13 +145,6 @@ namespace Compiler.Tokenization
                 TakeIt();
                 return TokenType.CharLiteral;
 
-            } else if (IsOperator(Reader.Current))
-            {
-                // Consume as operator
-                // TODO: Might need to add code to check for `=>` as it might be of type Becomes?
-                TakeIt();
-                return TokenType.Operator;
-
             } else if (IsPunctuation(Reader.Current))
             {
                 // Consume as punctuation
@@ -168,18 +161,28 @@ namespace Compiler.Tokenization
                         break;
                     case '~':
                         TakeIt();
-                        T = TokenType.Becomes;
+                        T = TokenType.Is;
                         break;
                     case ';':
                         TakeIt();
                         T = TokenType.Semicolon;
+                        break;
+                    case '?':
+                        TakeIt();
+                        T = TokenType.QuestionMark;
                         break;
                     default:
                         TakeIt();
                         break;
                 }
                 return T;
-            }
+            }else if (IsOperator(Reader.Current))
+            {
+                // Consume as operator
+                TakeIt();
+                return TokenType.Operator;
+
+            } 
             else if (Reader.Current == default(char))
             {
                 // Read the end of the file
@@ -229,7 +232,7 @@ namespace Compiler.Tokenization
                 case '<':
                 case '>':
                 case '=':
-                case '\\':
+                case '!':
                     return true;
                 default:
                     return false;
@@ -248,7 +251,8 @@ namespace Compiler.Tokenization
                 case ')':
                 case '~':
                 case ':':
-                case ';': 
+                case ';':
+                case '?':
                     return true;
                 default:
                     return false;

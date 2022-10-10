@@ -18,7 +18,7 @@ namespace Compiler.Tokenization
         Begin, Const, Do, Else, End, If, In, Let, Then, Var, While,
 
         // punctuation - terminals (Becomes is for assignment (:=) , Is is for constants (~))
-        Colon, Semicolon, Becomes, Is, LeftBracket, RightBracket,
+        Colon, Semicolon, Is, LeftBracket, RightBracket, QuestionMark, // add the ? and => here remove become make it is ~
 
         // special tokens
         EndOfText, Error
