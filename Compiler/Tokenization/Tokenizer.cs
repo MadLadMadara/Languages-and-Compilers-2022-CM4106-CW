@@ -258,5 +258,17 @@ namespace Compiler.Tokenization
                     return false;
             }
         }
+        /// <summary>
+        /// Checks if character is a graphic 
+        /// </summary>
+        /// <param name="c">The given character to be checked</param>
+        /// <returns>True if given char is a letter, digit, white space or a '?' otherwise return false</returns>
+        private static bool IsGraphic(char c)
+        {
+            if (Char.IsLetterOrDigit(c) || Char.IsWhiteSpace(c) || c == '?')
+                return true;
+            else
+                return false; 
+        }
     }
 }
