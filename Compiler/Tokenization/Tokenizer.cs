@@ -238,6 +238,7 @@ namespace Compiler.Tokenization
                     return false;
             }
         }
+        // ADDED: IsPunctuation
         /// <summary>
         ///  checks whether a given character is punctuation
         /// </summary>
@@ -258,6 +259,7 @@ namespace Compiler.Tokenization
                     return false;
             }
         }
+        // ADDED: IsGraphic
         /// <summary>
         /// Checks if character is a graphic 
         /// </summary>
@@ -265,7 +267,7 @@ namespace Compiler.Tokenization
         /// <returns>True if given char is a letter, digit, white space or a '?' otherwise return false</returns>
         private static bool IsGraphic(char c)
         {
-            if (Char.IsLetterOrDigit(c) || Char.IsWhiteSpace(c) || c == '?')
+            if (Char.IsLetterOrDigit(c) || IsWhiteSpace(c) || c == '?')
                 return true;
             else
                 return false; 

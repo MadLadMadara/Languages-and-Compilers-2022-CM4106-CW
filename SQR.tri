@@ -2,7 +2,7 @@
 let
 	const MAX ~ 10;
 	var n~ Integer
-
+    ? n < MAX => MAX ~ 1
 in
 	begin
         put({e});
@@ -12,7 +12,7 @@ in
 				while n > 0 do
 					begin
 						putint(n); puteol();
-						n ~ n-1  
+						n ~ n-1
 					end
 			else
 		else
