@@ -152,6 +152,7 @@ namespace Compiler.Tokenization
             } else if (IsOperator(Reader.Current))
             {
                 // Consume as operator
+                // TODO: Might need to add code to check for `=>` as it might be of type Becomes?
                 TakeIt();
                 return TokenType.Operator;
 
@@ -171,15 +172,7 @@ namespace Compiler.Tokenization
                         break;
                     case '~':
                         TakeIt();
-                        T = TokenType.Const;
-                        break;
-                    case ':':
-                        TakeIt();
-                        if (Reader.Current == '=')
-                        {
-                            TakeIt();
-                            T = TokenType.Becomes;
-                        }
+                        T = TokenType.Becomes;
                         break;
                     case ';':
                         TakeIt();
@@ -259,7 +252,7 @@ namespace Compiler.Tokenization
                 case ')':
                 case '~':
                 case ':':
-                case ';':
+                case ';': 
                     return true;
                 default:
                     return false;
