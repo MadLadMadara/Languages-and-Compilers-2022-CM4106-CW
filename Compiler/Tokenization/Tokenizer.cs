@@ -88,7 +88,7 @@ namespace Compiler.Tokenization
         /// </summary>
         private void SkipSeparators()
         {
-            if (Reader.Current == '!')
+            if (Reader.Current == '&')
             {
                 Reader.SkipRestOfLine();
             }
