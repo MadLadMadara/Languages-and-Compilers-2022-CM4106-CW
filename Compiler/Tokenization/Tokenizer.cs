@@ -108,33 +108,23 @@ namespace Compiler.Tokenization
         /// <remarks>Sets tokenSpelling to be the characters in the token</remarks>
         private TokenType ScanToken()
         {
-            if (Char.IsLetter(Reader.Current))
+            if (Char.IsLetterOrDigit(Reader.Current))
             {
-                // consume as identifier
-                TakeIt();
-                while (Char.IsLetterOrDigit(Reader.Current))
+                // consume as IntLiteral as defualt
+                TokenType T = TokenType.IntLiteral;
+                do
                 {
+                    if (Char.IsLetter(Reader.Current)) T = TokenType.Identifier; // consume as identifier if a leter is found
                     TakeIt();
-                }
+                } 
+                while (Char.IsLetterOrDigit(Reader.Current));
+                // check if keyword
                 if (TokenTypes.IsKeyword(TokenSpelling))
                 {
-                    return TokenTypes.GetTokenForKeyword(TokenSpelling);
+                    // consume as Keyword
+                    T = TokenTypes.GetTokenForKeyword(TokenSpelling);
                 }
-                else
-                {
-                    return TokenType.Identifier;
-                }
-            }
-            else if (Char.IsDigit(Reader.Current))
-            {
-                // Consume as int Literala
-                TakeIt();
-                while (Char.IsDigit(Reader.Current))
-                {
-                    TakeIt();
-                }
-                return TokenType.IntLiteral;
-
+                return T;
             } else if (Reader.Current == '{') 
             {
                 // consube as char chars literal
