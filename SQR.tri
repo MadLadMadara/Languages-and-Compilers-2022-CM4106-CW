@@ -1,19 +1,22 @@
 &this is an example program
 let
 	const MAX ~ 10;
-	var n~ Integer
+	var n ~ Integer
+	var c ~ Char
     ? n < MAX => MAX ~ 1
 in
 	begin
-        put({e});
-		getint(var n);
-		if n > 0 then
-			if n < MAX then
-				while n > 0 do
+		c ~ {L}	
+        put(c);
+		getint(var i: Integer);
+		if (n > 0) then
+			if (n < MAX) then
+				while (n > 0)
 					begin
 						putint(n); puteol();
 						n ~ n-1
 					end
+				wend
 			else
 		else
 	end

@@ -58,6 +58,11 @@ namespace Compiler
         private void WriteFinalMessage()
         {
             WriteLine($"Finished \nErrors reported:{Reporter.NumberOfErrors}");
+            
+            foreach (Token Error in Reporter.ErrorTokens)
+            {
+                WriteLine(Error.ToString());
+            }
         }
 
         /// <summary>

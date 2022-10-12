@@ -12,7 +12,7 @@ namespace Compiler.IO
         /// <summary>
         /// List of error tokens that have been reported
         /// </summary>
-        private List<Token> ErrorTokens;
+        public List<Token> ErrorTokens { get; }
         /// <summary>
         /// The number of errors that occourd
         /// </summary>

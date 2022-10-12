@@ -167,6 +167,10 @@ namespace Compiler.Tokenization
                         TakeIt();
                         T = TokenType.Semicolon;
                         break;
+                    case ':':
+                        TakeIt();
+                        T = TokenType.Colon;
+                        break;
                     case '?':
                         TakeIt();
                         T = TokenType.QuestionMark;
