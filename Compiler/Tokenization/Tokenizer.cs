@@ -182,10 +182,24 @@ namespace Compiler.Tokenization
                 return T;
             }else if (IsOperator(Reader.Current))
             {
-                // Consume as operator
-                TakeIt();
-                return TokenType.Operator;
+                TokenType T = TokenType.Operator; // set token type to operator
+                if (Reader.Current == '=') // check if operator is a spectial case
+                {
+                    TakeIt(); 
+                    if(Reader.Current == '>') // if not then consume as Operator
+                    {
+                        // Consume as punctuation spectial case ThenDo 
+                        TakeIt();
+                        T = TokenType.ThenDo;  
+                    }
+                }
+                else
+                {
+                    // Consume as operator 
+                    TakeIt();
 
+                }
+                return T;
             } 
             else if (Reader.Current == default(char))
             {
