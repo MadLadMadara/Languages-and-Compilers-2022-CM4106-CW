@@ -128,12 +128,18 @@ namespace Compiler.Tokenization
             } else if (Reader.Current == '{') 
             {
                 // consume as char chars literal
+                TokenType T = TokenType.Error;
                 TakeIt();
-                if (!IsGraphic(Reader.Current)) return TokenType.Error;
-                TakeIt();
-                if(Reader.Current != '}') return TokenType.Error;
-                TakeIt();
-                return TokenType.CharLiteral;
+                if (IsGraphic(Reader.Current))
+                {
+                    TakeIt();
+                    if (Reader.Current == '}')
+                    {
+                        TakeIt();
+                        T = TokenType.CharLiteral;
+                    }
+                }
+                return T;
 
             } else if (IsPunctuation(Reader.Current))
             {
