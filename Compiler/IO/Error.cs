@@ -26,19 +26,10 @@ namespace Compiler.IO
         /// </summary>
         /// <param name="token">Token that the error occurred on</param>
         /// <param name="message">Error message</param>
-        Error(Token token, string message)
+        public Error(Token token, string message)
         {
             Token = token;
             Message = message; 
-        }
-        /// <summary>
-        ///  Create new Error with token and default error message "Unknown"
-        /// </summary>
-        /// <param name="token">The token the error occurred on</param>
-        public Error(Token token)
-        {
-            Token = token;
-            Message = "Unknown!";
         }
         /// <summary>
         /// A formated error message of this error as 
