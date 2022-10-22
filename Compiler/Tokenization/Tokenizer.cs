@@ -48,7 +48,6 @@ namespace Compiler.Tokenization
             while (token.Type != TokenType.EndOfText)
             {
                 tokens.Add(token);
-                TokenSpelling.Clear();
                 token = GetNextToken();
             }
             tokens.Add(token);
@@ -65,21 +64,14 @@ namespace Compiler.Tokenization
             // Skip forward over any white space and comments
             SkipSeparators();
 
-            // Remember the starting position of the token
-            Position tokenStartPosition = Reader.CurrentPosition;
+            // Clear spelling 
+            TokenSpelling.Clear();
 
-            // Scan the token and work out its type
-            TokenType tokenType = ScanToken();
+            // Scan the next token and store it
+            Token  token = ScanToken();
 
-            // Create the token
-            Token token = new Token(tokenType, TokenSpelling.ToString(), tokenStartPosition);
             Debugger.Write($"Scanned {token}");
 
-            // Report an error if necessary
-            if (tokenType == TokenType.Error)
-            {
-                Reporter.NewError(token);
-            }
             return token;
         }
 
@@ -106,8 +98,11 @@ namespace Compiler.Tokenization
         /// </summary>
         /// <returns>The type of the next token</returns>
         /// <remarks>Sets tokenSpelling to be the characters in the token</remarks>
-        private TokenType ScanToken()
+        private Token ScanToken()
         {
+            // Remember the starting position of the token
+            Position tokenStartPosition = Reader.CurrentPosition;
+
             if (Char.IsLetterOrDigit(Reader.Current))
             {
                 // consume as IntLiteral as default
@@ -124,7 +119,7 @@ namespace Compiler.Tokenization
                     // consume as Keyword
                     T = TokenTypes.GetTokenForKeyword(TokenSpelling);
                 }
-                return T;
+                return new Token(T, TokenSpelling.ToString(), tokenStartPosition);
             } else if (Reader.Current == '{') 
             {
                 // consume as char chars literal
@@ -139,7 +134,7 @@ namespace Compiler.Tokenization
                         T = TokenType.CharLiteral;
                     }
                 }
-                return T;
+                return new Token(T, TokenSpelling.ToString(), tokenStartPosition);
 
             } else if (IsPunctuation(Reader.Current))
             {
@@ -172,11 +167,12 @@ namespace Compiler.Tokenization
                         T = TokenType.QuestionMark;
                         break;
                     default:
-                        TakeIt();
+                        TakeIt(); // this code will never be reached but is a good fail safe in case of future changes  
                         break;
                 }
-                return T;
-            }else if (IsOperator(Reader.Current))
+                return new Token(T, TokenSpelling.ToString(), tokenStartPosition);
+            }
+            else if (IsOperator(Reader.Current))
             {
                 TokenType T = TokenType.Operator; // set token type to operator
                 if (Reader.Current == '=') // check if operator is a special case
@@ -195,19 +191,19 @@ namespace Compiler.Tokenization
                     TakeIt();
 
                 }
-                return T;
+                return new Token(T, TokenSpelling.ToString(), tokenStartPosition);
             } 
             else if (Reader.Current == default(char))
             {
                 // Read the end of the file
                 TakeIt();
-                return TokenType.EndOfText;
+                return new Token(TokenType.EndOfText, TokenSpelling.ToString(), tokenStartPosition);
             }
             else
             {
                 // Encountered a character we weren't expecting
                 TakeIt();
-                return TokenType.Error;
+                return new Token(TokenType.Error, TokenSpelling.ToString(), tokenStartPosition);
             }
         }
 
