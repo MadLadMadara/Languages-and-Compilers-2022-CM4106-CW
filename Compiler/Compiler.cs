@@ -59,10 +59,9 @@ namespace Compiler
         {
             WriteLine($"Finished \nErrors reported:{Reporter.NumberOfErrors}");
             
-            foreach (Token Error in Reporter.ErrorTokens)
-            {
-                WriteLine(Error.ToString());
-            }
+
+                WriteLine(Reporter.ToString());
+
         }
 
         /// <summary>

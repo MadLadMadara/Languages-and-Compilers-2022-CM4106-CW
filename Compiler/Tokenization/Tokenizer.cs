@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Reflection.Emit;
 using System.Text;
 
 namespace Compiler.Tokenization
@@ -123,54 +124,68 @@ namespace Compiler.Tokenization
             } else if (Reader.Current == '{') 
             {
                 // consume as char chars literal
-                TokenType T = TokenType.Error;
+                TokenType T = TokenType.CharLiteral;
+                string errorMessage = ""; // construct error message in case there is an issue
                 TakeIt();
                 if (IsGraphic(Reader.Current))
                 {
                     TakeIt();
+
                     if (Reader.Current == '}')
                     {
                         TakeIt();
-                        T = TokenType.CharLiteral;
+                    }
+                    else
+                    {
+                        T = TokenType.Error;
+                        errorMessage = $"Syntax, Character literal expected closing tag '}}' but '{Reader.Current}' was found instead. Characters literal may only contain one character.";
                     }
                 }
-                return new Token(T, TokenSpelling.ToString(), tokenStartPosition);
+                else
+                {
+                    TakeIt();
+                    T = TokenType.Error;
+                    errorMessage = $"Syntax, Character literal expected a diet (0-9), Question mark '?', single black space character or a letter (a-z) in upper or lower case. This was found instead '{Reader.Current}'";
+                }
+                // create token 
+                Token token = new Token(T, TokenSpelling.ToString(), tokenStartPosition);
+                if (T == TokenType.Error) Reporter.NewError(token, errorMessage); // Report error if one has occurred
+                return token;
 
             } else if (IsPunctuation(Reader.Current))
             {
                 // Consume as punctuation
-                TokenType T = TokenType.Error;
+                TokenType T = TokenType.Error; // set default
+                string errorMessage = "";      // set default error message
+                TakeIt();
                 switch (Reader.Current)
                 {
                     case '(':
-                        TakeIt();
                         T = TokenType.LeftBracket;
                         break;
                     case ')':
-                        TakeIt();
                         T = TokenType.RightBracket;
                         break;
                     case '~':
-                        TakeIt();
                         T = TokenType.Is;
                         break;
                     case ';':
-                        TakeIt();
                         T = TokenType.Semicolon;
                         break;
                     case ':':
-                        TakeIt();
                         T = TokenType.Colon;
                         break;
                     case '?':
-                        TakeIt();
                         T = TokenType.QuestionMark;
                         break;
                     default:
-                        TakeIt(); // this code will never be reached but is a good fail safe in case of future changes  
+                        // Code will never be reached but is a good fail safe in-case of future changes
+                        errorMessage = $"Syntax, punctuation, Expected either '('. ')', '~', ';', ':', '?' but instead {Reader.Current} was founds."; 
                         break;
                 }
-                return new Token(T, TokenSpelling.ToString(), tokenStartPosition);
+                Token token = new Token(T, TokenSpelling.ToString(), tokenStartPosition);
+                if (T == TokenType.Error) Reporter.NewError(token, errorMessage); // Report error if one has occurred, again this is unreachable but a failsafe in-case of future changes 
+                return token;
             }
             else if (IsOperator(Reader.Current))
             {
@@ -180,7 +195,7 @@ namespace Compiler.Tokenization
                     TakeIt(); 
                     if(Reader.Current == '>') // if not then consume as Operator
                     {
-                        // Consume as punctuation special case ThenDo 
+                        // Consume as punctuation special case ThenDo '=>' for the quick if command 
                         TakeIt();
                         T = TokenType.ThenDo;  
                     }
@@ -203,7 +218,9 @@ namespace Compiler.Tokenization
             {
                 // Encountered a character we weren't expecting
                 TakeIt();
-                return new Token(TokenType.Error, TokenSpelling.ToString(), tokenStartPosition);
+                Token token = new Token(TokenType.Error, TokenSpelling.ToString(), tokenStartPosition);
+                Reporter.NewError(token, $"Syntax, unexpected and unknown character found '{Reader.Current}'."); 
+                return token;
             }
         }
 

@@ -4,6 +4,6 @@
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup>
-    <ActiveDebugProfile>Sqr</ActiveDebugProfile>
+    <ActiveDebugProfile>chars_error_scanner</ActiveDebugProfile>
   </PropertyGroup>
 </Project>
