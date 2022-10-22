@@ -27,7 +27,7 @@ namespace Compiler.Tokenization
         private StringBuilder TokenSpelling { get; } = new StringBuilder();
 
         /// <summary>
-        /// Createa a new tokenizer
+        /// Create a new tokenizer
         /// </summary>
         /// <param name="reader">The reader to get characters from the file</param>
         /// <param name="reporter">The error reporter to use</param>
@@ -62,7 +62,7 @@ namespace Compiler.Tokenization
         /// <returns>True if and only if there is another token in the file</returns>
         private Token GetNextToken()
         {
-            // Skip forward over any white spcae and comments
+            // Skip forward over any white space and comments
             SkipSeparators();
 
             // Remember the starting position of the token
@@ -110,11 +110,11 @@ namespace Compiler.Tokenization
         {
             if (Char.IsLetterOrDigit(Reader.Current))
             {
-                // consume as IntLiteral as defualt
+                // consume as IntLiteral as default
                 TokenType T = TokenType.IntLiteral;
                 do
                 {
-                    if (Char.IsLetter(Reader.Current)) T = TokenType.Identifier; // consume as identifier if a leter is found
+                    if (Char.IsLetter(Reader.Current)) T = TokenType.Identifier; // consume as identifier if a letter is found
                     TakeIt();
                 } 
                 while (Char.IsLetterOrDigit(Reader.Current));
@@ -127,7 +127,7 @@ namespace Compiler.Tokenization
                 return T;
             } else if (Reader.Current == '{') 
             {
-                // consube as char chars literal
+                // consume as char chars literal
                 TakeIt();
                 if (!IsGraphic(Reader.Current)) return TokenType.Error;
                 TakeIt();
@@ -173,12 +173,12 @@ namespace Compiler.Tokenization
             }else if (IsOperator(Reader.Current))
             {
                 TokenType T = TokenType.Operator; // set token type to operator
-                if (Reader.Current == '=') // check if operator is a spectial case
+                if (Reader.Current == '=') // check if operator is a special case
                 {
                     TakeIt(); 
                     if(Reader.Current == '>') // if not then consume as Operator
                     {
-                        // Consume as punctuation spectial case ThenDo 
+                        // Consume as punctuation special case ThenDo 
                         TakeIt();
                         T = TokenType.ThenDo;  
                     }

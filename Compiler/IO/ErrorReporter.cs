@@ -14,7 +14,7 @@ namespace Compiler.IO
         /// </summary>
         public List<Token> ErrorTokens { get; }
         /// <summary>
-        /// The number of errors that occourd
+        /// The number of errors that occurred
         /// </summary>
         public int NumberOfErrors => ErrorTokens.Count;
         /// <summary>
@@ -22,7 +22,7 @@ namespace Compiler.IO
         /// </summary>
         public bool HasErrors { get; private set; }
         /// <summary>
-        /// Constrictor, initialise ErrorTokens to new token list and HasErrors to false.
+        /// Constrictor, initialize ErrorTokens to new token list and HasErrors to false.
         /// </summary>
         public ErrorReporter()
         {
