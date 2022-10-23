@@ -58,6 +58,10 @@ namespace Compiler
         private void WriteFinalMessage()
         {
             WriteLine($"Finished \nErrors reported:{Reporter.NumberOfErrors}");
+            
+
+                WriteLine(Reporter.ToString());
+
         }
 
         /// <summary>

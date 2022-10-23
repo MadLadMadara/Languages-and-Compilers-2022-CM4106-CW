@@ -5,14 +5,19 @@
       "commandLineArgs": "example.tri",
       "workingDirectory": "../"
     },
-    "Profile 1": {
+    "Profile 2": {
       "commandName": "Project",
       "commandLineArgs": "example_chars_error1.tri",
       "workingDirectory": "../"
     },
-    "Profile 2": {
+    "Sqr": {
       "commandName": "Project",
-      "commandLineArgs": "example_chars_error1.tri",
+      "commandLineArgs": "SQR.tri",
+      "workingDirectory": "../"
+    },
+    "chars_error_scanner": {
+      "commandName": "Project",
+      "commandLineArgs": "test_scanner/chars_and _unknown_error_scanner.tri",
       "workingDirectory": "../"
     }
   }

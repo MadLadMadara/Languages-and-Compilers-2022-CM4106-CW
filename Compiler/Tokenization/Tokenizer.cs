@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Reflection.Emit;
 using System.Text;
 
 namespace Compiler.Tokenization
@@ -27,7 +28,7 @@ namespace Compiler.Tokenization
         private StringBuilder TokenSpelling { get; } = new StringBuilder();
 
         /// <summary>
-        /// Createa a new tokenizer
+        /// Create a new tokenizer
         /// </summary>
         /// <param name="reader">The reader to get characters from the file</param>
         /// <param name="reporter">The error reporter to use</param>
@@ -48,7 +49,6 @@ namespace Compiler.Tokenization
             while (token.Type != TokenType.EndOfText)
             {
                 tokens.Add(token);
-                TokenSpelling.Clear();
                 token = GetNextToken();
             }
             tokens.Add(token);
@@ -59,27 +59,20 @@ namespace Compiler.Tokenization
         /// <summary>
         /// Scan the next token
         /// </summary>
-        /// <returns>True if and only if there is another token in the file</returns>
+        /// <returns>Return a fully Scanned token</returns>
         private Token GetNextToken()
         {
-            // Skip forward over any white spcae and comments
+            // Skip forward over any white space and comments
             SkipSeparators();
 
-            // Remember the starting position of the token
-            Position tokenStartPosition = Reader.CurrentPosition;
+            // Clear spelling 
+            TokenSpelling.Clear();
 
-            // Scan the token and work out its type
-            TokenType tokenType = ScanToken();
+            // Scan the next token and store it
+            Token  token = ScanToken();
 
-            // Create the token
-            Token token = new Token(tokenType, TokenSpelling.ToString(), tokenStartPosition);
             Debugger.Write($"Scanned {token}");
 
-            // Report an error if necessary
-            if (tokenType == TokenType.Error)
-            {
-                Reporter.NewError(token);
-            }
             return token;
         }
 
@@ -88,7 +81,7 @@ namespace Compiler.Tokenization
         /// </summary>
         private void SkipSeparators()
         {
-            if (Reader.Current == '!')
+            if (Reader.Current == '&')
             {
                 Reader.SkipRestOfLine();
             }
@@ -106,102 +99,126 @@ namespace Compiler.Tokenization
         /// </summary>
         /// <returns>The type of the next token</returns>
         /// <remarks>Sets tokenSpelling to be the characters in the token</remarks>
-        private TokenType ScanToken()
+        private Token ScanToken()
         {
-            if (Char.IsLetter(Reader.Current))
+            // Remember the starting position of the token
+            Position tokenStartPosition = Reader.CurrentPosition;
+
+            if (Char.IsLetterOrDigit(Reader.Current))
             {
-                // consume as identifier
-                TakeIt();
-                while (Char.IsLetterOrDigit(Reader.Current))
+                // consume as IntLiteral as default
+                TokenType T = TokenType.IntLiteral;
+                do
                 {
+                    if (Char.IsLetter(Reader.Current)) T = TokenType.Identifier; // consume as identifier if a letter is found
                     TakeIt();
-                }
+                } 
+                while (Char.IsLetterOrDigit(Reader.Current));
+                // check if keyword
                 if (TokenTypes.IsKeyword(TokenSpelling))
                 {
-                    return TokenTypes.GetTokenForKeyword(TokenSpelling);
+                    // consume as Keyword
+                    T = TokenTypes.GetTokenForKeyword(TokenSpelling);
+                }
+                return new Token(T, TokenSpelling.ToString(), tokenStartPosition);
+            } else if (Reader.Current == '{') 
+            {
+                // consume as char literal
+                TokenType T = TokenType.CharLiteral;
+                string errorMessage = ""; // construct error message in case there is an issue
+                TakeIt();
+                if (IsGraphic(Reader.Current))
+                {
+                    TakeIt();
+
+                    if (Reader.Current == '}')
+                    {
+                        TakeIt();
+                    }
+                    else
+                    {
+                        T = TokenType.Error;
+                        errorMessage = $"Syntax, Character literal expected closing tag '}}' but '{Reader.Current}' was found instead. Characters literal may only contain one character.";
+                    }
                 }
                 else
                 {
-                    return TokenType.Identifier;
-                }
-            }
-            else if (Char.IsDigit(Reader.Current))
-            {
-                // Consume as int Literala
-                TakeIt();
-                while (Char.IsDigit(Reader.Current))
-                {
                     TakeIt();
+                    T = TokenType.Error;
+                    errorMessage = $"Syntax, Character literal expected a diet (0-9), Question mark '?', single black space character or a letter (a-z) in upper or lower case. This was found instead '{Reader.Current}'";
                 }
-                return TokenType.IntLiteral;
+                // create token 
+                Token token = new Token(T, TokenSpelling.ToString(), tokenStartPosition);
+                if (T == TokenType.Error) Reporter.NewError(token, errorMessage); // Report error if one has occurred
+                return token;
 
-            } else if (Reader.Current == '\'') 
+            } else if (Reader.Current == '(')
             {
-                // consube as char chars literal
-                // TODO: might need to remove the "'" from the consumption
+                // Consume as punctuation left bracket
                 TakeIt();
-                TakeIt();
-                if(Reader.Current == '\'')
-                {
-                    TakeIt();
-                    return TokenType.CharLiteral;
-                }
-                TakeIt();
-                return TokenType.Error;
-
-            } else if (IsOperator(Reader.Current))
+                return new Token(TokenType.LeftBracket, TokenSpelling.ToString(), tokenStartPosition);
+            } else if (Reader.Current == ')')
             {
-                // Consume as operator
+                // Consume as punctuation right bracket
                 TakeIt();
-                return TokenType.Operator;
-
-            } else if (IsPunctuation(Reader.Current))
+                return new Token(TokenType.RightBracket, TokenSpelling.ToString(), tokenStartPosition);
+            } else if (Reader.Current == '~')
             {
-                // Consume as punctuation
-                TokenType T = TokenType.Error;
-                switch (Reader.Current)
-                {
-                    case '(':
-                        TakeIt();
-                        T = TokenType.LeftBracket;
-                        break;
-                    case ')':
-                        TakeIt();
-                        T = TokenType.RightBracket;
-                        break;
-                    case '~':
-                        TakeIt();
-                        T = TokenType.Const;
-                        break;
-                    case ':':
-                        TakeIt();
-                        if (Reader.Current == '=')
-                        {
-                            TakeIt();
-                            T = TokenType.Becomes;
-                        }
-                        break;
-                    case ';':
-                        TakeIt();
-                        T = TokenType.Semicolon;
-                        break;
-                    default:
-                        TakeIt();
-                        break;
-                }
-                return T;
+                // Consume as punctuation Is
+                TakeIt();
+                return new Token(TokenType.Is, TokenSpelling.ToString(), tokenStartPosition);
             }
+            else if (Reader.Current == ';')
+            {
+                // Consume as punctuation semicolon 
+                TakeIt();
+                return new Token(TokenType.Semicolon, TokenSpelling.ToString(), tokenStartPosition);
+            }
+            else if (Reader.Current == ':')
+            {
+                // Consume as punctuation colon 
+                TakeIt();
+                return new Token(TokenType.Colon, TokenSpelling.ToString(), tokenStartPosition);
+            } else if (Reader.Current == '?')
+            {
+                // Consume as punctuation question mark 
+                TakeIt();
+                return new Token(TokenType.QuestionMark, TokenSpelling.ToString(), tokenStartPosition);
+            }
+            else if (IsOperator(Reader.Current))
+            {
+                TokenType T = TokenType.Operator; // set token type to operator
+                if (Reader.Current == '=') // check if operator is a special case
+                {
+                    TakeIt(); 
+                    if(Reader.Current == '>') // if not then consume as Operator
+                    {
+                        // Consume as punctuation special case ThenDo '=>' for the quick if command 
+                        TakeIt();
+                        T = TokenType.ThenDo;  
+                    }
+                }
+                else
+                {
+                    // Consume as operator 
+                    TakeIt();
+
+                }
+                return new Token(T, TokenSpelling.ToString(), tokenStartPosition);
+            } 
             else if (Reader.Current == default(char))
             {
                 // Read the end of the file
                 TakeIt();
-                return TokenType.EndOfText;
+                return new Token(TokenType.EndOfText, TokenSpelling.ToString(), tokenStartPosition);
             }
             else
             {
                 // Encountered a character we weren't expecting
                 TakeIt();
-                return TokenType.Error;
+                Token token = new Token(TokenType.Error, TokenSpelling.ToString(), tokenStartPosition);
+                Reporter.NewError(token, $"Syntax, unexpected and unknown character found '{Reader.Current}'."); 
+                return token;
             }
         }
 
@@ -240,30 +257,24 @@ namespace Compiler.Tokenization
                 case '<':
                 case '>':
                 case '=':
-                case '\\':
+                case '!':
                     return true;
                 default:
                     return false;
             }
         }
+        // ADDED: IsGraphic
         /// <summary>
-        ///  checks whether a given character is punctuation
+        /// Checks if character is a graphic 
         /// </summary>
-        /// <param name="c">The character to check</param>
-        /// <returns>True if char is of token type punctuation</returns>
-        private static bool IsPunctuation(char c)
+        /// <param name="c">The given character to be checked</param>
+        /// <returns>True if given char is a letter, digit, white space or a '?' otherwise return false</returns>
+        private static bool IsGraphic(char c)
         {
-            switch (c)
-            {
-                case '(':
-                case ')':
-                case '~':
-                case ':':
-                case ';':
-                    return true;
-                default:
-                    return false;
-            }
+            if (Char.IsLetterOrDigit(c) || IsWhiteSpace(c) || c == '?')
+                return true;
+            else
+                return false; 
         }
     }
 }

@@ -1,0 +1,25 @@
+&this is an example program
+let
+	const MAX ~ 10;
+	var n ~ Integer
+	var c ~ Char
+	const 123MIN ~ 10;
+	var x12 ~ Integer
+	var 1y3git  ~ Char
+    ? n < MAX => MAX ~ 1
+in
+	begin
+		c ~ {L}	
+        ? n > 0 => put(c)
+		getint(var i: Integer);
+		if (n > 0) then
+			if (n < MAX) then
+				while (n > 0)
+					begin
+						putint(n); puteol();
+						n ~ n-1
+					end
+				wend
+			else
+		else
+	end

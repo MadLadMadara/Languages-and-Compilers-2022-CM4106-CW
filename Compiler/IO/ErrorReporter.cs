@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 
+
 namespace Compiler.IO
 {
     /// <summary>
@@ -10,36 +11,51 @@ namespace Compiler.IO
     public class ErrorReporter
     {
         /// <summary>
-        /// List of error tokens that have been reported
+        /// List of errors that have been reported
         /// </summary>
-        private List<Token> ErrorTokens;
+        private List<Error> Errors;
         /// <summary>
-        /// The number of errors that occourd
+        /// Returns a read-only copy of the Errors List property 
         /// </summary>
-        public int NumberOfErrors => ErrorTokens.Count;
+        public IReadOnlyList<Object> ListOfErrors => Errors.AsReadOnly();
+        /// <summary>
+        /// The number of errors that occurred
+        /// </summary>
+        public int NumberOfErrors => Errors.Count;
         /// <summary>
         /// Whether or not any errors have been encountered
         /// </summary>
         public bool HasErrors { get; private set; }
         /// <summary>
-        /// Constrictor, initialise ErrorTokens to new token list and HasErrors to false.
+        /// Constrictor, initialize ErrorTokens to new token list and HasErrors to false.
         /// </summary>
         public ErrorReporter()
         {
-            ErrorTokens = new List<Token>();
+            Errors = new List<Error>();
             HasErrors = false;
         }
         /// <summary>
-        /// Add new error token to ErrorToken list
+        /// Reports a new error to be added to the error list
         /// </summary>
-        /// <param name="token">Error token </param>
-        public void NewError(Token token)
+        /// <param name="token">Token that the error occurred on</param>
+        /// <param name="message">Description of the error</param>
+        public void NewError(Token token, string message)
         {
-            if (token.Type == TokenType.Error)
-            {  
-                HasErrors = true;
-                ErrorTokens.Add(token);
+            HasErrors = true;
+            Errors.Add(new Error(token, message));
+        }
+        /// <summary>
+        /// Creates a formated output of the list of errors that have been add via the NewError method
+        /// </summary>
+        /// <returns>Formatted string of errors</returns>
+        public override string ToString()
+        {
+            string errorLog = $"ERROR LOG...\n\nHas errors occurred:{HasErrors}\nNumber of errors:{NumberOfErrors}\n\n";
+            foreach (Error e in Errors)
+            {
+                errorLog += $"{e.ToString()}\n\n";
             }
+            return errorLog;
         }
     }
 }
