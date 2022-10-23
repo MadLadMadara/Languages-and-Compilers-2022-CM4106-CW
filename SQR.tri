@@ -5,12 +5,12 @@ let
 	var c ~ Char
 	const 123MIN ~ 10;
 	var x12 ~ Integer
-	var 1y3 ~ Char
+	var 1y3git  ~ Char
     ? n < MAX => MAX ~ 1
 in
 	begin
 		c ~ {L}	
-        put(c);
+        ? n > 0 => put(c)
 		getint(var i: Integer);
 		if (n > 0) then
 			if (n < MAX) then

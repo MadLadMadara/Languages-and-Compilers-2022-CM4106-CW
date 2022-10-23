@@ -59,7 +59,7 @@ namespace Compiler.Tokenization
         /// <summary>
         /// Scan the next token
         /// </summary>
-        /// <returns>True if and only if there is another token in the file</returns>
+        /// <returns>Return a fully Scanned token</returns>
         private Token GetNextToken()
         {
             // Skip forward over any white space and comments
@@ -123,7 +123,7 @@ namespace Compiler.Tokenization
                 return new Token(T, TokenSpelling.ToString(), tokenStartPosition);
             } else if (Reader.Current == '{') 
             {
-                // consume as char chars literal
+                // consume as char literal
                 TokenType T = TokenType.CharLiteral;
                 string errorMessage = ""; // construct error message in case there is an issue
                 TakeIt();
@@ -152,40 +152,38 @@ namespace Compiler.Tokenization
                 if (T == TokenType.Error) Reporter.NewError(token, errorMessage); // Report error if one has occurred
                 return token;
 
-            } else if (IsPunctuation(Reader.Current))
+            } else if (Reader.Current == '(')
             {
-                // Consume as punctuation
-                TokenType T = TokenType.Error; // set default
-                string errorMessage = "";      // set default error message
+                // Consume as punctuation left bracket
                 TakeIt();
-                switch (Reader.Current)
-                {
-                    case '(':
-                        T = TokenType.LeftBracket;
-                        break;
-                    case ')':
-                        T = TokenType.RightBracket;
-                        break;
-                    case '~':
-                        T = TokenType.Is;
-                        break;
-                    case ';':
-                        T = TokenType.Semicolon;
-                        break;
-                    case ':':
-                        T = TokenType.Colon;
-                        break;
-                    case '?':
-                        T = TokenType.QuestionMark;
-                        break;
-                    default:
-                        // Code will never be reached but is a good fail safe in-case of future changes
-                        errorMessage = $"Syntax, punctuation, Expected either '('. ')', '~', ';', ':', '?' but instead {Reader.Current} was founds."; 
-                        break;
-                }
-                Token token = new Token(T, TokenSpelling.ToString(), tokenStartPosition);
-                if (T == TokenType.Error) Reporter.NewError(token, errorMessage); // Report error if one has occurred, again this is unreachable but a failsafe in-case of future changes 
-                return token;
+                return new Token(TokenType.LeftBracket, TokenSpelling.ToString(), tokenStartPosition);
+            } else if (Reader.Current == ')')
+            {
+                // Consume as punctuation right bracket
+                TakeIt();
+                return new Token(TokenType.RightBracket, TokenSpelling.ToString(), tokenStartPosition);
+            } else if (Reader.Current == '~')
+            {
+                // Consume as punctuation Is
+                TakeIt();
+                return new Token(TokenType.Is, TokenSpelling.ToString(), tokenStartPosition);
+            }
+            else if (Reader.Current == ';')
+            {
+                // Consume as punctuation semicolon 
+                TakeIt();
+                return new Token(TokenType.Semicolon, TokenSpelling.ToString(), tokenStartPosition);
+            }
+            else if (Reader.Current == ':')
+            {
+                // Consume as punctuation colon 
+                TakeIt();
+                return new Token(TokenType.Colon, TokenSpelling.ToString(), tokenStartPosition);
+            } else if (Reader.Current == '?')
+            {
+                // Consume as punctuation question mark 
+                TakeIt();
+                return new Token(TokenType.QuestionMark, TokenSpelling.ToString(), tokenStartPosition);
             }
             else if (IsOperator(Reader.Current))
             {
@@ -260,27 +258,6 @@ namespace Compiler.Tokenization
                 case '>':
                 case '=':
                 case '!':
-                    return true;
-                default:
-                    return false;
-            }
-        }
-        // ADDED: IsPunctuation
-        /// <summary>
-        ///  checks whether a given character is punctuation
-        /// </summary>
-        /// <param name="c">The character to check</param>
-        /// <returns>True if char is of token type punctuation</returns>
-        private static bool IsPunctuation(char c)
-        {
-            switch (c)
-            {
-                case '(':
-                case ')':
-                case '~':
-                case ':':
-                case ';':
-                case '?':
                     return true;
                 default:
                     return false;

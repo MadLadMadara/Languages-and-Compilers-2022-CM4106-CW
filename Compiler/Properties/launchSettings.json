@@ -17,7 +17,7 @@
     },
     "chars_error_scanner": {
       "commandName": "Project",
-      "commandLineArgs": "chars_error_scanner.tri",
+      "commandLineArgs": "test_scanner/chars_and _unknown_error_scanner.tri",
       "workingDirectory": "../"
     }
   }

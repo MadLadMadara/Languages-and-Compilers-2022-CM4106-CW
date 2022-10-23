@@ -15,9 +15,9 @@ namespace Compiler.Tokenization
         IntLiteral, Identifier, Operator, CharLiteral,
 
         // reserved words - terminals
-        Begin, Const, Else, End, If, In, Let, Then, Var, While, Wend, Loop, Repeat, 
+        Begin, Const, Else, End, If, In, Let, Then, Var, While, Wend, Loop, Repeat, // add wend loop and repeat
 
-        // punctuation - terminals (Becomes is for assignment (:=) , Is is for constants (~))
+        // punctuation - terminals 
         Colon, Semicolon, Is, LeftBracket, RightBracket, QuestionMark, ThenDo, // add the ? and => here remove become make it is ~
 
         // special tokens
