@@ -162,6 +162,17 @@ namespace Compiler.SyntacticAnalysis
         }
 
         /// <summary>
+        /// Parse Let command
+        /// </summary>
+        private void ParseLetCommand()
+        {
+            Accept(Let);
+            ParseDeclaration();
+            Accept(In);
+            ParseSingleCommand();
+        }
+
+        /// <summary>
         /// Parses a declaration
         /// </summary>
         private void ParseDeclaration()
