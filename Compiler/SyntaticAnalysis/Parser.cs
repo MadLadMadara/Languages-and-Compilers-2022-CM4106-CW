@@ -1,6 +1,7 @@
 ﻿using Compiler.IO;
 using Compiler.Tokenization;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
 using static Compiler.Tokenization.TokenType;
 
 namespace Compiler.SyntacticAnalysis
@@ -62,7 +63,7 @@ namespace Compiler.SyntacticAnalysis
             else
             {
                 Debugger.Write($"Failed to accepted: {CurrentToken}, Expected: {expectedType}");
-                Reporter.NewError(CurrentToken, $"Expected {expectedType}, found: {CurrentToken.Type}");
+                Reporter.NewError(CurrentToken, $"Expected '{expectedType}', found: '{CurrentToken.Type}'");
             }
         }
 
@@ -126,15 +127,27 @@ namespace Compiler.SyntacticAnalysis
         /// <summary>
         /// Parses an assignment or call command
         /// </summary>
-        private void ParseAssignmentOrCallCommand()
+        private void ParseAssignmentOrCallCommand() // TODO: Change made from lab with the error handling
         {
             Debugger.Write("Parsing Assignment Command or Call Command");
-            // This is a lie - this is only dealing with the assignment. Change it to deal with function calls too.
-
-            Debugger.Write("Parsing Assignment Command");
             ParseIdentifier();
-            Accept(Becomes); 
-            ParseExpression();
+            if(CurrentToken.Type == Is)
+            {
+                Debugger.Write("Parsing Assignment Command");
+                Accept(Is);
+                ParseExpression();
+            }else if (CurrentToken.Type == LeftBracket)
+            {
+                Debugger.Write("Parsing Call Command");
+                Accept(LeftBracket);
+                ParseParameter();
+                Accept(RightBracket);
+            }
+            else
+            {
+                Debugger.Write($"Failed to accepted: {CurrentToken}, Expected: {Is} or {LeftBracket}");
+                Reporter.NewError(CurrentToken, $"Expected {Is} or {LeftBracket}, found: {CurrentToken.Spelling}");
+            }
         }
 
         /// <summary>
@@ -147,6 +160,7 @@ namespace Compiler.SyntacticAnalysis
             ParseCommand();
             Accept(End);
         }
+
         /// <summary>
         /// Parses a declaration
         /// </summary>
@@ -176,9 +190,11 @@ namespace Compiler.SyntacticAnalysis
                     ParseVarDeclaration();
                     break;
                 default:
+                    // TODO: error handeling here
                     break;
             }
         }
+
         /// <summary>
         /// Parse Const Deceleration 
         /// </summary>
@@ -190,6 +206,7 @@ namespace Compiler.SyntacticAnalysis
             Accept(Is);
             ParseExpression();
         }
+
         /// <summary>
         /// Parse Var Declaration
         /// </summary>
@@ -216,6 +233,7 @@ namespace Compiler.SyntacticAnalysis
             }
 
         }
+
         /// <summary>
         /// Parses an expression
         /// </summary>
@@ -241,6 +259,7 @@ namespace Compiler.SyntacticAnalysis
                     break;
             }
         }
+
         /// <summary>
         /// Parses a unary expression
         /// </summary>
@@ -251,6 +270,9 @@ namespace Compiler.SyntacticAnalysis
             ParsePrimaryExpression();
         }
 
+        /// <summary>
+        /// Parses a Bracket Expression
+        /// </summary>
         private void ParseBracketExpression()
         {
             Debugger.Write("Parsing Bracket Expression");
@@ -258,6 +280,10 @@ namespace Compiler.SyntacticAnalysis
             ParseExpression();
             Accept(RightBracket);
         }
+
+        /// <summary>
+        /// Parse Identifier Expression
+        /// </summary>
         private void ParseIdExpression() // TODO: Change from lab
         {
             Debugger.Write("Parsing Call Expression or Identifier Expression");
@@ -269,6 +295,7 @@ namespace Compiler.SyntacticAnalysis
                 Accept(RightBracket);
             }
         }
+
         /// <summary>
         /// Parsing Character Expression
         /// </summary>
@@ -277,6 +304,7 @@ namespace Compiler.SyntacticAnalysis
             Debugger.Write("Parsing Character Expression");
             ParseIntegerLiteral();
         }
+
         /// <summary>
         /// Parse Integer Expression 
         /// </summary>
@@ -285,6 +313,7 @@ namespace Compiler.SyntacticAnalysis
             Debugger.Write("Parsing Integer Expression");
             ParseIntegerLiteral();
         }
+
         /// <summary>
         /// Parses a parameter
         /// </summary>
@@ -304,6 +333,7 @@ namespace Compiler.SyntacticAnalysis
                     break;
             }
         }
+
         /// <summary>
         /// Parses a value parameter
         /// </summary>
@@ -312,6 +342,7 @@ namespace Compiler.SyntacticAnalysis
             Debugger.Write("Parsing Value Parameter");
             ParseExpression();
         }
+
         /// <summary>
         /// Parses a variable parameter
         /// </summary>
@@ -321,6 +352,7 @@ namespace Compiler.SyntacticAnalysis
             Accept(Var);
             ParseIdentifier();
         }
+
         /// <summary>
         /// Parse TypeDenoter
         /// </summary>
@@ -347,6 +379,7 @@ namespace Compiler.SyntacticAnalysis
             Debugger.Write("Parsing Integer Literal  ");
             Accept(IntLiteral);
         }
+
         /// <summary>
         /// Parses Character Literal 
         /// </summary>
@@ -355,6 +388,7 @@ namespace Compiler.SyntacticAnalysis
             Debugger.Write("Parsing Character Literal");
             Accept(IntLiteral);
         }
+
         /// <summary>
         /// Parses Operator 
         /// </summary>
