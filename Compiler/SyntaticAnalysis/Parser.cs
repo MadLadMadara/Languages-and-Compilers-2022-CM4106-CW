@@ -143,10 +143,43 @@ namespace Compiler.SyntacticAnalysis
             Accept(End);
         }
         /// <summary>
+        /// Parses a declaration
+        /// </summary>
+        private void ParseDeclaration()
+        {
+            Debugger.Write("Parsing Declaration");
+            ParseSingleDeclaration();
+            while (CurrentToken.Type == Semicolon)
+            {
+                Accept(Semicolon);
+                ParseSingleDeclaration();
+            }
+        }
+
+        /// <summary>
+        /// Parses a single declaration
+        /// </summary>
+        private void ParseSingleDeclaration()
+        {
+            Debugger.Write("Parsing Single Declaration");
+            switch (CurrentToken.Type)
+            {
+                case Const:
+                    ParseConstDeclaration();
+                    break;
+                case Var:
+                    ParseVarDeclaration();
+                    break;
+                default:
+                    break;
+            }
+        }
+        /// <summary>
         /// Parse Const Deceleration 
         /// </summary>
         private void ParseConstDeclaration()
         {
+            Debugger.Write("Parsing Const Declaration");
             Accept(Const);
             ParseIdentifier();
             Accept(Is);
