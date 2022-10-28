@@ -154,8 +154,6 @@ namespace Compiler.SyntacticAnalysis
             // This is not implemented yet - you need to add the code here.
         }
 
-
-
         /// <summary>
         /// Parses an identifier
         /// </summary>
@@ -163,6 +161,31 @@ namespace Compiler.SyntacticAnalysis
         {
             Debugger.Write("Parsing identifier");
             Accept(Identifier);
+        }
+
+        /// <summary>
+        /// Parses Integer Literal 
+        /// </summary>
+        private void ParseIntegerLiteral()
+        {
+            Debugger.Write("Parsing Integer Literal  ");
+            Accept(IntLiteral);
+        }
+        /// <summary>
+        /// Parses Character Literal 
+        /// </summary>
+        private void ParseCharacterLiteral()
+        {
+            Debugger.Write("Parsing Character Literal");
+            Accept(IntLiteral);
+        }
+        /// <summary>
+        /// Parses Operator 
+        /// </summary>
+        private void ParseOperator()
+        {
+            Debugger.Write("Parsing Operator");
+            Accept(Operator);
         }
     }
 }
