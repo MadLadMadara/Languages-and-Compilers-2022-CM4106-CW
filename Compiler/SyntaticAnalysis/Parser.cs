@@ -154,6 +154,14 @@ namespace Compiler.SyntacticAnalysis
             // This is not implemented yet - you need to add the code here.
         }
         /// <summary>
+        /// Parse Integer Expression 
+        /// </summary>
+        private void ParseIntExpression()
+        {
+            Debugger.Write("Parsing Integer Expression");
+            ParseIntegerLiteral();
+        }
+        /// <summary>
         /// Parse TypeDenoter
         /// </summary>
         private void ParseTypeDenoter()
