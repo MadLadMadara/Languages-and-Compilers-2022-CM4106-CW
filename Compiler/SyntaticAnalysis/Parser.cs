@@ -154,6 +154,17 @@ namespace Compiler.SyntacticAnalysis
             // This is not implemented yet - you need to add the code here.
         }
         /// <summary>
+        /// Parse Var Declaration
+        /// </summary>
+        private void ParseVarDeclaration()
+        {
+            Debugger.Write("Parsing Var Declaration");
+            Accept(Var);
+            ParseIdentifier();
+            Accept(Is);
+            ParseTypeDenoter();
+        }
+        /// <summary>
         /// Parsing Character Expression
         /// </summary>
         private void ParseCharExpression()
