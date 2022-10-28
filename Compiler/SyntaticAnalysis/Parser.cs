@@ -221,7 +221,6 @@ namespace Compiler.SyntacticAnalysis
                 Accept(RightBracket);
             }
         }
-
         /// <summary>
         /// Parsing Character Expression
         /// </summary>
@@ -237,6 +236,25 @@ namespace Compiler.SyntacticAnalysis
         {
             Debugger.Write("Parsing Integer Expression");
             ParseIntegerLiteral();
+        }
+        /// <summary>
+        /// Parses a parameter
+        /// </summary>
+        private void ParseParameter()
+        {
+            Debugger.Write("Parsing Parameter");
+            switch (CurrentToken.Type)
+            {
+                case RightBracket:
+                    // Empty parameter list
+                    break;
+                case Var:
+                    ParseVarParameter();
+                    break;
+                default:
+                    ParseValueParameter();
+                    break;
+            }
         }
         /// <summary>
         /// Parses a value parameter
