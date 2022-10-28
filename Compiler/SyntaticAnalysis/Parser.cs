@@ -153,13 +153,21 @@ namespace Compiler.SyntacticAnalysis
             Debugger.Write("Parsing Expression");
             // This is not implemented yet - you need to add the code here.
         }
+        /// <summary>
+        /// Parse TypeDenoter
+        /// </summary>
+        private void ParseTypeDenoter()
+        {
+            Debugger.Write("Parsing Type Denoter");
+            ParseIdentifier();
+        }
 
         /// <summary>
         /// Parses an identifier
         /// </summary>
         private void ParseIdentifier()
         {
-            Debugger.Write("Parsing identifier");
+            Debugger.Write("Parsing Identifier");
             Accept(Identifier);
         }
 
