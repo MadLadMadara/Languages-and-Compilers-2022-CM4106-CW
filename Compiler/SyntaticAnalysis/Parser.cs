@@ -143,6 +143,16 @@ namespace Compiler.SyntacticAnalysis
             Accept(End);
         }
         /// <summary>
+        /// Parse Const Deceleration 
+        /// </summary>
+        private void ParseConstDeclaration()
+        {
+            Accept(Const);
+            ParseIdentifier();
+            Accept(Is);
+            ParseExpression();
+        }
+        /// <summary>
         /// Parse Var Declaration
         /// </summary>
         private void ParseVarDeclaration()
@@ -194,7 +204,7 @@ namespace Compiler.SyntacticAnalysis
             }
         }
         /// <summary>
-        /// Parses a unary expresion
+        /// Parses a unary expression
         /// </summary>
         private void ParseUnaryExpression()
         {
