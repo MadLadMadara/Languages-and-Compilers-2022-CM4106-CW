@@ -239,6 +239,23 @@ namespace Compiler.SyntacticAnalysis
             ParseIntegerLiteral();
         }
         /// <summary>
+        /// Parses a value parameter
+        /// </summary>
+        private void ParseValueParameter()
+        {
+            Debugger.Write("Parsing Value Parameter");
+            ParseExpression();
+        }
+        /// <summary>
+        /// Parses a variable parameter
+        /// </summary>
+        private void ParseVarParameter()
+        {
+            Debugger.Write("Parsing Variable Parameter");
+            Accept(Var);
+            ParseIdentifier();
+        }
+        /// <summary>
         /// Parse TypeDenoter
         /// </summary>
         private void ParseTypeDenoter()
