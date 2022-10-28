@@ -128,7 +128,7 @@ namespace Compiler.SyntacticAnalysis
 
             Debugger.Write("Parsing Assignment Command");
             ParseIdentifier();
-            Accept(Becomes);
+            Accept(Becomes); 
             ParseExpression();
         }
 
@@ -142,17 +142,6 @@ namespace Compiler.SyntacticAnalysis
             ParseCommand();
             Accept(End);
         }
-
-
-
-        /// <summary>
-        /// Parses an expression
-        /// </summary>
-        private void ParseExpression()
-        {
-            Debugger.Write("Parsing Expression");
-            // This is not implemented yet - you need to add the code here.
-        }
         /// <summary>
         /// Parse Var Declaration
         /// </summary>
@@ -164,6 +153,75 @@ namespace Compiler.SyntacticAnalysis
             Accept(Is);
             ParseTypeDenoter();
         }
+
+        /// <summary>
+        /// Parses an expression
+        /// </summary>
+        private void ParseExpression()
+        {
+            Debugger.Write("Parsing Expression");
+            ParsePrimaryExpression();
+            while (CurrentToken.Type == TokenType.Operator)
+            {
+                ParseOperator();
+                ParsePrimaryExpression();
+            }
+
+        }
+        /// <summary>
+        /// Parses an expression
+        /// </summary>
+        private void ParsePrimaryExpression()
+        {
+            Debugger.Write("Parsing Primary Expression");
+            switch (CurrentToken.Type)
+            {
+                case IntLiteral:
+                    ParseIntExpression();
+                    break;
+                case CharLiteral:
+                    ParseCharExpression();
+                    break;
+                case Identifier:
+                    ParseIdExpression();
+                    break;
+                case Operator:
+                    ParseUnaryExpression();
+                    break;
+                case LeftBracket:
+                    ParseBracketExpression();
+                    break;
+            }
+        }
+        /// <summary>
+        /// Parses a unary expresion
+        /// </summary>
+        private void ParseUnaryExpression()
+        {
+            Debugger.Write("Parsing Unary Expression");
+            ParseOperator();
+            ParsePrimaryExpression();
+        }
+
+        private void ParseBracketExpression()
+        {
+            Debugger.Write("Parsing Bracket Expression");
+            Accept(LeftBracket);
+            ParseExpression();
+            Accept(RightBracket);
+        }
+        private void ParseIdExpression() // TODO: Change from lab
+        {
+            Debugger.Write("Parsing Call Expression or Identifier Expression");
+            ParseIdentifier();
+            if(CurrentToken.Type == LeftBracket)
+            {
+                Accept(LeftBracket);
+                ParseParameter();
+                Accept(RightBracket);
+            }
+        }
+
         /// <summary>
         /// Parsing Character Expression
         /// </summary>
