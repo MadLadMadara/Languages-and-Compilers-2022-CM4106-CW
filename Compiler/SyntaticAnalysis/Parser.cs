@@ -186,6 +186,17 @@ namespace Compiler.SyntacticAnalysis
         }
 
         /// <summary>
+        /// Parse Quick if Command
+        /// </summary>
+        private void ParseQuickIfCommand()
+        {
+            Accept(QuestionMark);
+            ParseExpression();
+            Accept(ThenDo);
+            ParseSingleCommand();
+        }
+
+        /// <summary>
         /// Parses a declaration
         /// </summary>
         private void ParseDeclaration()
