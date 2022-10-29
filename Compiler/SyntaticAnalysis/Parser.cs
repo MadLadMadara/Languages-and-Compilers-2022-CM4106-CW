@@ -197,6 +197,17 @@ namespace Compiler.SyntacticAnalysis
         }
 
         /// <summary>
+        /// Parse While Command
+        /// </summary>
+        private void ParseWhileCommand()
+        {
+            Accept(While); 
+            ParseBracketExpression();
+            ParseSingleCommand();
+            Accept(Wend);
+        }
+
+        /// <summary>
         /// Parses a declaration
         /// </summary>
         private void ParseDeclaration()
