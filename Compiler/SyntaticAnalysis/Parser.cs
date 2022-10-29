@@ -173,6 +173,19 @@ namespace Compiler.SyntacticAnalysis
         }
 
         /// <summary>
+        ///  Parse If Command
+        /// </summary>
+        private void ParseIfCommand()
+        {
+            Accept(If);
+            ParseExpression();
+            Accept(Then);
+            ParseSingleCommand();
+            Accept(Else);
+            ParseSingleCommand();
+        }
+
+        /// <summary>
         /// Parses a declaration
         /// </summary>
         private void ParseDeclaration()
@@ -201,7 +214,7 @@ namespace Compiler.SyntacticAnalysis
                     ParseVarDeclaration();
                     break;
                 default:
-                    // TODO: error handeling here
+                    // TODO: error handling here
                     break;
             }
         }
