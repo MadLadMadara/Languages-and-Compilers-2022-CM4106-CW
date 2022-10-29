@@ -119,7 +119,21 @@ namespace Compiler.SyntacticAnalysis
                 case Begin:
                     ParseBeginCommand();
                     break;
-
+                case Let:
+                    ParseLetCommand();
+                    break;
+                case If:
+                    ParseIfCommand();
+                    break;
+                case QuestionMark:
+                    ParseQuickIfCommand();
+                    break;
+                case While:
+                    ParseWhileCommand();
+                    break;
+                case Loop:
+                    ParseLoopCommand();
+                    break;
                 default:
                     Debugger.Write("Parsing Blank Command");
                     break;
@@ -168,6 +182,7 @@ namespace Compiler.SyntacticAnalysis
         /// </summary>
         private void ParseLetCommand()
         {
+            Debugger.Write("Parsing Let Command");
             Accept(Let);
             ParseDeclaration();
             Accept(In);
@@ -179,6 +194,7 @@ namespace Compiler.SyntacticAnalysis
         /// </summary>
         private void ParseIfCommand()
         {
+            Debugger.Write("Parsing If Command");
             Accept(If);
             ParseExpression();
             Accept(Then);
@@ -192,6 +208,7 @@ namespace Compiler.SyntacticAnalysis
         /// </summary>
         private void ParseQuickIfCommand()
         {
+            Debugger.Write("Parsing Quick If Command");
             Accept(QuestionMark);
             ParseExpression();
             Accept(ThenDo);
@@ -203,6 +220,7 @@ namespace Compiler.SyntacticAnalysis
         /// </summary>
         private void ParseWhileCommand()
         {
+            Debugger.Write("Parsing While Command");
             Accept(While); 
             ParseBracketExpression();
             ParseSingleCommand();
@@ -214,6 +232,7 @@ namespace Compiler.SyntacticAnalysis
         /// </summary>
         private void ParseLoopCommand()
         {
+            Debugger.Write("Parsing Loop Command");
             Accept(Loop);
             ParseSingleCommand();
             Accept(While);
