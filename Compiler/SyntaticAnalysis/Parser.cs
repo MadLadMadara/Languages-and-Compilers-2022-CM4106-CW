@@ -119,7 +119,9 @@ namespace Compiler.SyntacticAnalysis
                 case Begin:
                     ParseBeginCommand();
                     break;
+
                 default:
+                    Debugger.Write("Parsing Blank Command");
                     break;
             }
         }
@@ -205,6 +207,21 @@ namespace Compiler.SyntacticAnalysis
             ParseBracketExpression();
             ParseSingleCommand();
             Accept(Wend);
+        }
+
+        /// <summary>
+        /// Parse Loop Command
+        /// </summary>
+        private void ParseLoopCommand()
+        {
+            Accept(Loop);
+            ParseSingleCommand();
+            Accept(While);
+            Accept(LeftBracket);
+            ParseExpression();
+            Accept(RightBracket);
+            ParseSingleCommand();
+            Accept(Repeat);
         }
 
         /// <summary>
