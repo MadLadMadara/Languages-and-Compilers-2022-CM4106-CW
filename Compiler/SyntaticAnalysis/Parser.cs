@@ -112,7 +112,6 @@ namespace Compiler.SyntacticAnalysis
             Debugger.Write("Parsing Single Command");
             switch (CurrentToken.Type)
             {
-                // There are missing cases here - you'll need to fill them all in
                 case Identifier:
                     ParseAssignmentOrCallCommand();
                     break;
@@ -143,7 +142,7 @@ namespace Compiler.SyntacticAnalysis
         /// <summary>
         /// Parses an assignment or call command
         /// </summary>
-        private void ParseAssignmentOrCallCommand() // TODO: Change made from lab with the error handling
+        private void ParseAssignmentOrCallCommand() 
         {
             Debugger.Write("Parsing Assignment Command or Call Command");
             ParseIdentifier();
@@ -266,13 +265,16 @@ namespace Compiler.SyntacticAnalysis
             switch (CurrentToken.Type)
             {
                 case Const:
+                    Debugger.Write("Parsing Const");
                     ParseConstDeclaration();
                     break;
                 case Var:
+                    Debugger.Write("Parsing Var");
                     ParseVarDeclaration();
                     break;
                 default:
-                    // TODO: error handling here
+                    Debugger.Write($"Failed to accepted: {CurrentToken}, Expected: 'Const' or 'Var'");
+                    Reporter.NewError(CurrentToken, $"Expected 'Const' or 'Var', found: '{CurrentToken.Type}'");
                     break;
             }
         }
@@ -366,7 +368,7 @@ namespace Compiler.SyntacticAnalysis
         /// <summary>
         /// Parse Identifier Expression
         /// </summary>
-        private void ParseIdExpression() // TODO: Change from lab
+        private void ParseIdExpression() 
         {
             Debugger.Write("Parsing Call Expression or Identifier Expression");
             ParseIdentifier();
@@ -384,7 +386,7 @@ namespace Compiler.SyntacticAnalysis
         private void ParseCharExpression()
         {
             Debugger.Write("Parsing Character Expression");
-            ParseIntegerLiteral();
+            ParseCharacterLiteral();
         }
 
         /// <summary>
@@ -468,7 +470,7 @@ namespace Compiler.SyntacticAnalysis
         private void ParseCharacterLiteral()
         {
             Debugger.Write("Parsing Character Literal");
-            Accept(IntLiteral);
+            Accept(CharLiteral);
         }
 
         /// <summary>
