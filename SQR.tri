@@ -15,6 +15,10 @@ in
 		while (n < MAX)
 			n ~ n + 1
 		repeat;
-		
+
+		while (n < MAX) 
+			put(c)
+		wend;
+
 		? n == MAX => put(c);
 	end
