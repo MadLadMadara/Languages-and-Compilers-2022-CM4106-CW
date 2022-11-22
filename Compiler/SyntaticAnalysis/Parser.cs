@@ -82,10 +82,12 @@ namespace Compiler.SyntacticAnalysis
         /// <summary>
         /// Parses a program
         /// </summary>
-        private void ParseProgram()
+        /// <returns>ProgramNode</returns>
+        private ProgramNode ParseProgram()
         {
             Debugger.Write("Parsing program");
-            ParseSingleCommand();
+            ICommandNode command = ParseCommand();
+            return new ProgramNode(command);
         }
 
         /// <summary>
