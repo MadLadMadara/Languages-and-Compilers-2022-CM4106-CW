@@ -1,5 +1,6 @@
 ﻿using Compiler.IO;
 using Compiler.Tokenization;
+using Compiler.Nodes;
 using System.Collections.Generic;
 using System.Reflection.Metadata;
 using static Compiler.Tokenization.TokenType;
@@ -71,13 +72,12 @@ namespace Compiler.SyntacticAnalysis
         /// Parses a program
         /// </summary>
         /// <param name="tokens">The tokens to parse</param>
-        public void Parse(List<Token> tokens)
+        /// <returns>A ProgramNode of the program. This is the full Abstract Syntax Tree</returns>
+        public ProgramNode Parse(List<Token> tokens)
         {
             this.tokens = tokens;
-            ParseProgram();
+            return ParseProgram();
         }
-
-
 
         /// <summary>
         /// Parses a program
@@ -87,8 +87,6 @@ namespace Compiler.SyntacticAnalysis
             Debugger.Write("Parsing program");
             ParseSingleCommand();
         }
-
-
 
         /// <summary>
         /// Parses a command
