@@ -35,7 +35,7 @@
         /// <inheritDoc />
         public override string ToString()
         {
-            return $"{tokenStartPosition.ToString()}, type={Type}, spelling=\"{Spelling}\"";
+            return $"{tokenStartPosition.ToString()}type={Type}, spelling=\"{Spelling}\"";
         }
     }
 }
