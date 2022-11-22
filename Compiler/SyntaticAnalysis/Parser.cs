@@ -93,15 +93,17 @@ namespace Compiler.SyntacticAnalysis
         /// <summary>
         /// Parses a command
         /// </summary>
-        private void ParseCommand()
+        private ICommandNode ParseCommand()
         {
             Debugger.Write("Parsing command");
-            ParseSingleCommand();
+            List<ICommandNode> commands = new List<ICommandNode>();
+            commands.Add(ParseSingleCommand());
             while (CurrentToken.Type == Semicolon)
             {
                 Accept(Semicolon);
-                ParseSingleCommand();
+                commands.Add(ParseSingleCommand());
             }
+            return commands.Count == 1 ? commands[0] : new SequentialCommandNode(commands);
         }
 
         /// <summary>
