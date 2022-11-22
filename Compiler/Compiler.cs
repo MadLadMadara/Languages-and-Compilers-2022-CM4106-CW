@@ -1,6 +1,7 @@
 ﻿using Compiler.IO;
 using Compiler.Tokenization;
 using Compiler.SyntacticAnalysis;
+using Compiler.Nodes;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -53,7 +54,8 @@ namespace Compiler
             // Tokenize
             Write("Tokenising...\n");
             List<Token> tokens = Tokenizer.GetAllTokens();
-            Parser.Parse(tokens);
+            ProgramNode tree = Parser.Parse(tokens);
+            WriteLine(TreePrinter.ToString(tree));
             if (Reporter.HasErrors) return;
             WriteLine("Done");
         }
