@@ -374,25 +374,28 @@ namespace Compiler.SyntacticAnalysis
         /// <summary>
         /// Parse Identifier Expression
         /// </summary>
-        private void ParseIdExpression() 
+        /// <returns>AST of an Identifier expression or call expression</returns>
+        private IExpressionNode ParseIdExpression() 
         {
             Debugger.Write("Parsing Call Expression or Identifier Expression");
-            ParseIdentifier();
-            if(CurrentToken.Type == LeftBracket)
+            IdentifierNode Identifier =  ParseIdentifier();
+            IExpressionNode IdExprssion = new IdExpressionNode(Identifier);
+            if (CurrentToken.Type == LeftBracket)
             {
                 Accept(LeftBracket);
-                ParseParameter();
+                IdExprssion = new CallExpressionNode(Identifier, ParseParameter());
                 Accept(RightBracket);
             }
+            return IdExprssion;
         }
 
         /// <summary>
         /// Parsing Character Expression
         /// </summary>
-        private void ParseCharExpression()
+        private CharacterExpressionNode ParseCharExpression()
         {
             Debugger.Write("Parsing Character Expression");
-            ParseCharacterLiteral();
+            return new CharacterExpressionNode(ParseCharacterLiteral());
         }
 
         /// <summary>
@@ -408,20 +411,26 @@ namespace Compiler.SyntacticAnalysis
         /// <summary>
         /// Parses a parameter
         /// </summary>
-        private void ParseParameter()
+        private IParameterNode ParseParameter()
         {
             Debugger.Write("Parsing Parameter");
             switch (CurrentToken.Type)
             {
-                case RightBracket:
-                    // Empty parameter list
-                    break;
+                case Identifier:
+                case IntLiteral:
+                case CharLiteral:
+                case Operator:
+                case LeftBracket:
+                    return ParseValueParameter();
                 case Var:
-                    ParseVarParameter();
-                    break;
+                    return ParseVarParameter();
+                case RightBracket:
+                    Debugger.Write("Parsing Blank Parameter");
+                    return new BlankParameterNode(CurrentToken.tokenStartPosition);
                 default:
-                    ParseValueParameter();
-                    break;
+                    Debugger.Write($"Failed to accepted: {CurrentToken}, Expected: 'IntLiteral', 'CharLiteral', 'Identifier', 'Operator', 'LeftBracket', RightBracket or'Var'");
+                    Reporter.NewError(CurrentToken, $"Expected IntLiteral', 'CharLiteral', 'Identifier', 'Operator' or 'LeftBracket'. found: '{CurrentToken.Type}'");
+                    return new ErrorNode(CurrentToken.tokenStartPosition);
             }
         }
 
@@ -444,13 +453,15 @@ namespace Compiler.SyntacticAnalysis
             ParseIdentifier();
         }
 
+
         /// <summary>
         /// Parse TypeDenoter
         /// </summary>
-        private void ParseTypeDenoter()
+        /// <returns>AST of an TypeDenoterNode</returns>
+        private TypeDenoterNode ParseTypeDenoter()
         {
             Debugger.Write("Parsing Type Denoter");
-            ParseIdentifier();
+            return new TypeDenoterNode(ParseIdentifier());
         }
 
         /// <summary>
@@ -460,27 +471,33 @@ namespace Compiler.SyntacticAnalysis
         private IdentifierNode ParseIdentifier()
         {
             Debugger.Write("Parsing Identifier");
-            Token identifierToken= CurrentToken;
+            Token T= CurrentToken;
             Accept(Identifier);
-            return new IdentifierNode(identifierToken);
+            return new IdentifierNode(T);
         }
 
         /// <summary>
         /// Parses Integer Literal 
         /// </summary>
-        private void ParseIntegerLiteral()
+        /// <returns>AST of the IntegerLiteralNode</returns>
+        private IntegerLiteralNode ParseIntegerLiteral()
         {
-            Debugger.Write("Parsing Integer Literal  ");
+            Debugger.Write("Parsing Integer Literal");
+            Token T = CurrentToken;
             Accept(IntLiteral);
+            return new IntegerLiteralNode(T);
         }
 
         /// <summary>
         /// Parses Character Literal 
         /// </summary>
-        private void ParseCharacterLiteral()
+        /// <returns>AST of the CharacterLiteralNode</returns>
+        private CharacterLiteralNode ParseCharacterLiteral()
         {
             Debugger.Write("Parsing Character Literal");
+            Token T = CurrentToken;
             Accept(CharLiteral);
+            return new CharacterLiteralNode(T);
         }
 
         /// <summary>
