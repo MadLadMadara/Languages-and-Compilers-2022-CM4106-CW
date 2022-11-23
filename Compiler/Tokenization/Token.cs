@@ -17,7 +17,7 @@
         /// <summary>
         /// The starting position of the token in the source code
         /// </summary>
-        public Position tokenStartPosition { get; }
+        public Position Position { get; }
 
         /// <summary>
         /// Creates a token in the source language
@@ -29,13 +29,13 @@
         {
             Spelling = spelling;
             Type = type;
-            tokenStartPosition = position; 
+            Position = position; 
         }
 
         /// <inheritDoc />
         public override string ToString()
         {
-            return $"{tokenStartPosition.ToString()}type={Type}, spelling=\"{Spelling}\"";
+            return $"{Position.ToString()}type={Type}, spelling=\"{Spelling}\"";
         }
     }
 }

@@ -115,7 +115,7 @@ namespace Compiler.SyntacticAnalysis
         /// <returns>AST of a single command</returns>
         private ICommandNode ParseSingleCommand()
         {
-            Debugger.Write("Parsing Single Command");
+            Debugger.Write("Parsing Single LoopCommand");
             switch (CurrentToken.Type)
             {
                 case Identifier:
@@ -133,8 +133,8 @@ namespace Compiler.SyntacticAnalysis
                 case Loop:
                     return ParseLoopCommand();
                 default:
-                    Debugger.Write("Parsing Skip Command");
-                    return new BlankCommandNode(CurrentToken.tokenStartPosition);
+                    Debugger.Write("Parsing Skip LoopCommand");
+                    return new BlankCommandNode(CurrentToken.Position);
             }
         }
 
@@ -144,17 +144,17 @@ namespace Compiler.SyntacticAnalysis
         /// <returns>AST of a call or assignment command</returns>
         private ICommandNode ParseAssignmentOrCallCommand() 
         {
-            Debugger.Write("Parsing Assignment Command or Call Command");
-            Position position = CurrentToken.tokenStartPosition;
+            Debugger.Write("Parsing Assignment LoopCommand or Call LoopCommand");
+            Position position = CurrentToken.Position;
             IdentifierNode identifier =  ParseIdentifier();
             if(CurrentToken.Type == Is)
             {
-                Debugger.Write("Parsing Assignment Command");
+                Debugger.Write("Parsing Assignment LoopCommand");
                 Accept(Is);
                 return new AssignCommandNode(identifier, ParseExpression()); 
             }else if (CurrentToken.Type == LeftBracket)
             {
-                Debugger.Write("Parsing Call Command");
+                Debugger.Write("Parsing Call LoopCommand");
                 Accept(LeftBracket);
                 IParameterNode parameter = ParseParameter();
                 Accept(RightBracket);
@@ -174,7 +174,7 @@ namespace Compiler.SyntacticAnalysis
         /// <returns>AST of a command node</returns>
         private ICommandNode ParseBeginCommand()
         {
-            Debugger.Write("Parsing Begin Command");
+            Debugger.Write("Parsing Begin LoopCommand");
             Accept(Begin);
             ICommandNode command = ParseCommand();
             Accept(End);
@@ -187,8 +187,8 @@ namespace Compiler.SyntacticAnalysis
         /// <returns>AST of a let command</returns>
         private LetCommandNode ParseLetCommand()
         {
-            Debugger.Write("Parsing Let Command");
-            Position position = CurrentToken.tokenStartPosition;
+            Debugger.Write("Parsing Let LoopCommand");
+            Position position = CurrentToken.Position;
             Accept(Let);
             IDeclarationNode declaration = ParseDeclaration();
             Accept(In);
@@ -197,57 +197,69 @@ namespace Compiler.SyntacticAnalysis
         }
 
         /// <summary>
-        ///  Parse If Command
+        /// Parse If LoopCommand
         /// </summary>
-        private void ParseIfCommand()
+        /// <returns>AST of an If command</returns>
+        private IfCommandNode ParseIfCommand()
         {
-            Debugger.Write("Parsing If Command");
+            Debugger.Write("Parsing If LoopCommand");
+            Position position = CurrentToken.Position;
             Accept(If);
-            ParseExpression();
+            IExpressionNode expression = ParseExpression();
             Accept(Then);
-            ParseSingleCommand();
+            ICommandNode thenCommand = ParseSingleCommand();
             Accept(Else);
-            ParseSingleCommand();
+            ICommandNode elseCommand = ParseSingleCommand();
+            return new IfCommandNode(expression, thenCommand, elseCommand, position);
         }
 
         /// <summary>
-        /// Parse Quick if Command
+        /// Parse Quick If LoopCommand
         /// </summary>
-        private void ParseQuickIfCommand()
+        /// <returns>AST of a quick If command</returns>
+        private QuickIfCommandNode ParseQuickIfCommand()
         {
-            Debugger.Write("Parsing Quick If Command");
+            Debugger.Write("Parsing Quick If LoopCommand");
+            Position position = CurrentToken.Position;
             Accept(QuestionMark);
-            ParseExpression();
+            IExpressionNode expression =  ParseExpression();
             Accept(ThenDo);
-            ParseSingleCommand();
+            ICommandNode command = ParseSingleCommand();
+            return new QuickIfCommandNode(expression, command, position); 
+
         }
 
         /// <summary>
-        /// Parse While Command
+        /// Parse While LoopCommand
         /// </summary>
-        private void ParseWhileCommand()
+        /// <returns>AST of a while command</returns>
+        private WhileCommandNode ParseWhileCommand()
         {
-            Debugger.Write("Parsing While Command");
+            Debugger.Write("Parsing While LoopCommand");
+            Position position = CurrentToken.Position;
             Accept(While); 
-            ParseBracketExpression();
-            ParseSingleCommand();
+            IExpressionNode expresion = ParseBracketExpression();
+            ICommandNode command = ParseSingleCommand();
             Accept(Wend);
+            return new WhileCommandNode(expresion, command, position);
         }
 
         /// <summary>
-        /// Parse Loop Command
+        /// Parse Loop LoopCommand
         /// </summary>
-        private void ParseLoopCommand()
+        private LoopCommandNode ParseLoopCommand()
         {
-            Debugger.Write("Parsing Loop Command");
+            Debugger.Write("Parsing Loop LoopCommand");
+            Position position = CurrentToken.Position;
             Accept(Loop);
-            ParseSingleCommand();
+            ICommandNode command = ParseSingleCommand();
             Accept(While);
             Accept(LeftBracket);
-            ParseExpression();
+            IExpressionNode expression = ParseExpression();
             Accept(RightBracket);
-            ParseSingleCommand();
+            ICommandNode loopCommand = ParseSingleCommand();
             Accept(Repeat);
+            return new LoopCommandNode(command, expression, loopCommand, position);
         }
 
         /// <summary>
@@ -278,7 +290,7 @@ namespace Compiler.SyntacticAnalysis
             {
                 case Const:
                     Debugger.Write("Parsing Const");
-                    return ParseConstDeclaration()
+                    return ParseConstDeclaration(); 
                 case Var:
                     Debugger.Write("Parsing Var");
                     return ParseVarDeclaration();
@@ -292,10 +304,11 @@ namespace Compiler.SyntacticAnalysis
         /// <summary>
         /// Parse Const Deceleration 
         /// </summary>
+        /// <returns>AST of a Const deceleration</returns>
         private IDeclarationNode ParseConstDeclaration()
         {
             Debugger.Write("Parsing Const Declaration");
-            Position position = CurrentToken.tokenStartPosition;
+            Position position = CurrentToken.Position;
             Accept(Const);
             IdentifierNode identifier = ParseIdentifier();
             Accept(Is);
@@ -306,10 +319,11 @@ namespace Compiler.SyntacticAnalysis
         /// <summary>
         /// Parse Var Declaration
         /// </summary>
+        /// <returns>AST of a Var deceleration </returns>
         private IDeclarationNode ParseVarDeclaration()
         {
             Debugger.Write("Parsing Var Declaration");
-            Position position = CurrentToken.tokenStartPosition;
+            Position position = CurrentToken.Position;
             Accept(Var);
             IdentifierNode identifier = ParseIdentifier();
             Accept(Is);
@@ -356,7 +370,7 @@ namespace Compiler.SyntacticAnalysis
                 default:
                     Debugger.Write($"Failed to accepted: {CurrentToken}, Expected: 'IntLiteral', 'CharLiteral', 'Identifier', 'Operator' or 'LeftBracket'");
                     Reporter.NewError(CurrentToken, $"Expected IntLiteral', 'CharLiteral', 'Identifier', 'Operator' or 'LeftBracket'. found: '{CurrentToken.Type}'");
-                    return new ErrorNode(CurrentToken.tokenStartPosition);
+                    return new ErrorNode(CurrentToken.Position);
             }
         }
 
@@ -439,11 +453,11 @@ namespace Compiler.SyntacticAnalysis
                     return ParseVarParameter();
                 case RightBracket:
                     Debugger.Write("Parsing Blank Parameter");
-                    return new BlankParameterNode(CurrentToken.tokenStartPosition);
+                    return new BlankParameterNode(CurrentToken.Position);
                 default:
                     Debugger.Write($"Failed to accepted: {CurrentToken}, Expected: 'IntLiteral', 'CharLiteral', 'Identifier', 'Operator', 'LeftBracket', RightBracket or'Var'");
                     Reporter.NewError(CurrentToken, $"Expected IntLiteral', 'CharLiteral', 'Identifier', 'Operator' or 'LeftBracket'. found: '{CurrentToken.Type}'");
-                    return new ErrorNode(CurrentToken.tokenStartPosition);
+                    return new ErrorNode(CurrentToken.Position);
             }
         }
 
@@ -464,9 +478,9 @@ namespace Compiler.SyntacticAnalysis
         private VarParameterNode ParseVarParameter()
         {
             Debugger.Write("Parsing Variable Parameter");
-            Position startPosition = CurrentToken.tokenStartPosition;
+            Position position = CurrentToken.Position;
             Accept(Var);
-            return new VarParameterNode(ParseIdentifier(), startPosition);
+            return new VarParameterNode(ParseIdentifier(), position);
         }
 
 

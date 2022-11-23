@@ -31,5 +31,10 @@ namespace Compiler
         {
             return $"LineNumber={LineNumber}, LinePosition=\"{LinePosition}\", ";
         }
+
+        /// <summary>
+        /// A constant to use as the position of system defined items
+        /// </summary>
+        public static Position BuiltIn { get; } = new Position(-1, -1);
     }
 }
