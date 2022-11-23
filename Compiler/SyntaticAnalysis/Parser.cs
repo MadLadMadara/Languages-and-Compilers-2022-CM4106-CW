@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reflection.Metadata;
 using static Compiler.Tokenization.TokenType;
 using System.Reflection.Metadata.Ecma335;
+using System.Linq.Expressions;
 
 namespace Compiler.SyntacticAnalysis
 {
@@ -328,6 +329,7 @@ namespace Compiler.SyntacticAnalysis
         /// <returns>AST of a Primary expression</returns>
         private IExpressionNode ParsePrimaryExpression()
         {
+            // TODO Back here
             Debugger.Write("Parsing Primary Expression");
             switch (CurrentToken.Type)
             {
@@ -394,12 +396,13 @@ namespace Compiler.SyntacticAnalysis
         }
 
         /// <summary>
-        /// Parse Integer Expression 
+        /// Parse Integer Expression
         /// </summary>
-        private void ParseIntExpression()
+        /// <returns>AST of an integer expression</returns>
+        private IntegerExpressionNode ParseIntExpression()
         {
             Debugger.Write("Parsing Integer Expression");
-            ParseIntegerLiteral();
+            return new IntegerExpressionNode(ParseIntegerLiteral());
         }
 
         /// <summary>
