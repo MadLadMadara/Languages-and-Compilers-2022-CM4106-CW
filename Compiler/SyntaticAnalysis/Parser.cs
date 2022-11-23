@@ -82,7 +82,7 @@ namespace Compiler.SyntacticAnalysis
         /// <summary>
         /// Parses a program
         /// </summary>
-        /// <returns>ProgramNode</returns>
+        /// <returns>AST of a Program</returns>
         private ProgramNode ParseProgram()
         {
             Debugger.Write("Parsing program");
@@ -93,6 +93,7 @@ namespace Compiler.SyntacticAnalysis
         /// <summary>
         /// Parses a command
         /// </summary>
+        /// <returns>AST of a command</returns>
         private ICommandNode ParseCommand()
         {
             Debugger.Write("Parsing command");
@@ -109,35 +110,29 @@ namespace Compiler.SyntacticAnalysis
         /// <summary>
         /// Parses a single command
         /// </summary>
-        private void ParseSingleCommand()
+        /// <returns>AST of a single command</returns>
+        private ICommandNode ParseSingleCommand()
         {
             Debugger.Write("Parsing Single Command");
             switch (CurrentToken.Type)
             {
                 case Identifier:
-                    ParseAssignmentOrCallCommand();
-                    break;
+                    return ParseAssignmentOrCallCommand();
                 case Begin:
-                    ParseBeginCommand();
-                    break;
+                    return ParseBeginCommand();
                 case Let:
-                    ParseLetCommand();
-                    break;
+                    return ParseLetCommand();
                 case If:
-                    ParseIfCommand();
-                    break;
+                    return ParseIfCommand();
                 case QuestionMark:
-                    ParseQuickIfCommand();
-                    break;
+                    return ParseQuickIfCommand();
                 case While:
-                    ParseWhileCommand();
-                    break;
+                    return ParseWhileCommand();
                 case Loop:
-                    ParseLoopCommand();
-                    break;
+                    return ParseLoopCommand();
                 default:
-                    Debugger.Write("Parsing Blank Command");
-                    break;
+                    Debugger.Write("Parsing Skip Command");
+                    return new BlankCommandNode(CurrentToken.tokenStartPosition);
             }
         }
 
@@ -478,10 +473,13 @@ namespace Compiler.SyntacticAnalysis
         /// <summary>
         /// Parses Operator 
         /// </summary>
-        private void ParseOperator()
+        /// <returns>AST of the OperatorNode</returns>
+        private OperatorNode ParseOperator()
         {
             Debugger.Write("Parsing Operator");
+            Token T = CurrentToken;
             Accept(Operator);
+            return new OperatorNode(T);
         }
     }
 }
