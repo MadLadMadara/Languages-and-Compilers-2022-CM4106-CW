@@ -4,6 +4,7 @@ using Compiler.Nodes;
 using System.Collections.Generic;
 using System.Reflection.Metadata;
 using static Compiler.Tokenization.TokenType;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Compiler.SyntacticAnalysis
 {
@@ -139,26 +140,30 @@ namespace Compiler.SyntacticAnalysis
         /// <summary>
         /// Parses an assignment or call command
         /// </summary>
-        private void ParseAssignmentOrCallCommand() 
+        /// <returns>AST of a call or assignment command</returns>
+        private ICommandNode ParseAssignmentOrCallCommand() 
         {
             Debugger.Write("Parsing Assignment Command or Call Command");
-            ParseIdentifier();
+            Position position = CurrentToken.tokenStartPosition;
+            IdentifierNode identifier =  ParseIdentifier();
             if(CurrentToken.Type == Is)
             {
                 Debugger.Write("Parsing Assignment Command");
                 Accept(Is);
-                ParseExpression();
+                return new AssignCommandNode(identifier, ParseExpression()); 
             }else if (CurrentToken.Type == LeftBracket)
             {
                 Debugger.Write("Parsing Call Command");
                 Accept(LeftBracket);
-                ParseParameter();
+                IParameterNode parameter = ParseParameter();
                 Accept(RightBracket);
+                return new CallCommandNode(identifier, parameter); 
             }
             else
             {
                 Debugger.Write($"Failed to accepted: {CurrentToken}, Expected: {Is} or {LeftBracket}");
                 Reporter.NewError(CurrentToken, $"Expected {Is} or {LeftBracket}, found: {CurrentToken.Spelling}");
+                return new ErrorNode(position);
             }
         }
 
@@ -303,41 +308,43 @@ namespace Compiler.SyntacticAnalysis
         /// <summary>
         /// Parses an expression
         /// </summary>
-        private void ParseExpression()
+        /// <returns>AST of an expression</returns>
+        private IExpressionNode ParseExpression()
         {
             Debugger.Write("Parsing Expression");
-            ParsePrimaryExpression();
+            IExpressionNode left  = ParsePrimaryExpression();
             while (CurrentToken.Type == TokenType.Operator)
             {
-                ParseOperator();
-                ParsePrimaryExpression();
+                OperatorNode op =  ParseOperator();
+                IExpressionNode right = ParsePrimaryExpression();
+                left = new BinaryExpressionNode(left, op, right);
             }
-
+            return left; 
         }
 
         /// <summary>
-        /// Parses an expression
+        /// Parses a primary expression
         /// </summary>
-        private void ParsePrimaryExpression()
+        /// <returns>AST of a Primary expression</returns>
+        private IExpressionNode ParsePrimaryExpression()
         {
             Debugger.Write("Parsing Primary Expression");
             switch (CurrentToken.Type)
             {
                 case IntLiteral:
-                    ParseIntExpression();
-                    break;
+                    return ParseIntExpression();
                 case CharLiteral:
-                    ParseCharExpression();
-                    break;
+                    return ParseCharExpression();
                 case Identifier:
-                    ParseIdExpression();
-                    break;
+                    return ParseIdExpression(); 
                 case Operator:
-                    ParseUnaryExpression();
-                    break;
+                    return ParseUnaryExpression();
                 case LeftBracket:
-                    ParseBracketExpression();
-                    break;
+                    return ParseBracketExpression();
+                default:
+                    Debugger.Write($"Failed to accepted: {CurrentToken}, Expected: 'IntLiteral', 'CharLiteral', 'Identifier', 'Operator' or 'LeftBracket'");
+                    Reporter.NewError(CurrentToken, $"Expected IntLiteral', 'CharLiteral', 'Identifier', 'Operator' or 'LeftBracket'. found: '{CurrentToken.Type}'");
+                    return new ErrorNode(CurrentToken.tokenStartPosition);
             }
         }
 
@@ -446,10 +453,13 @@ namespace Compiler.SyntacticAnalysis
         /// <summary>
         /// Parses an identifier
         /// </summary>
-        private void ParseIdentifier()
+        /// <returns>AST of an identifier</returns>
+        private IdentifierNode ParseIdentifier()
         {
             Debugger.Write("Parsing Identifier");
+            Token identifierToken= CurrentToken;
             Accept(Identifier);
+            return new IdentifierNode(identifierToken);
         }
 
         /// <summary>
