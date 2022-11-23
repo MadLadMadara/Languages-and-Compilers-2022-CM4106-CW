@@ -353,7 +353,7 @@ namespace Compiler.SyntacticAnalysis
         /// <summary>
         /// Parses a unary expression
         /// </summary>
-        private void ParseUnaryExpression()
+        private IExpressionNode ParseUnaryExpression()
         {
             Debugger.Write("Parsing Unary Expression");
             ParseOperator();
@@ -411,6 +411,7 @@ namespace Compiler.SyntacticAnalysis
         /// <summary>
         /// Parses a parameter
         /// </summary>
+        /// <returns>AST of a parameter</returns>
         private IParameterNode ParseParameter()
         {
             Debugger.Write("Parsing Parameter");
@@ -435,22 +436,25 @@ namespace Compiler.SyntacticAnalysis
         }
 
         /// <summary>
-        /// Parses a value parameter
+        ///  Parses a value parameter
         /// </summary>
-        private void ParseValueParameter()
+        /// <returns>AST of a parameters value</returns>
+        private ExpressionParameterNode ParseValueParameter()
         {
             Debugger.Write("Parsing Value Parameter");
-            ParseExpression();
+            return new ExpressionParameterNode(ParseExpression());
         }
 
         /// <summary>
         /// Parses a variable parameter
         /// </summary>
-        private void ParseVarParameter()
+        /// <returns>AST of a parameter identifier </returns>
+        private VarParameterNode ParseVarParameter()
         {
             Debugger.Write("Parsing Variable Parameter");
+            Position startPosition = CurrentToken.tokenStartPosition;
             Accept(Var);
-            ParseIdentifier();
+            return new VarParameterNode(ParseIdentifier(), startPosition);
         }
 
 
