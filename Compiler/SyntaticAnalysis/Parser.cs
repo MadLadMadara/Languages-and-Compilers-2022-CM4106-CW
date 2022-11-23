@@ -171,24 +171,29 @@ namespace Compiler.SyntacticAnalysis
         /// <summary>
         /// Parses a begin command
         /// </summary>
-        private void ParseBeginCommand()
+        /// <returns>AST of a command node</returns>
+        private ICommandNode ParseBeginCommand()
         {
             Debugger.Write("Parsing Begin Command");
             Accept(Begin);
-            ParseCommand();
+            ICommandNode command = ParseCommand();
             Accept(End);
+            return command;
         }
 
         /// <summary>
-        /// Parse Let command
+        /// Parse let command
         /// </summary>
-        private void ParseLetCommand()
+        /// <returns>AST of a let command</returns>
+        private LetCommandNode ParseLetCommand()
         {
             Debugger.Write("Parsing Let Command");
+            Position position = CurrentToken.tokenStartPosition;
             Accept(Let);
-            ParseDeclaration();
+            IDeclarationNode declaration = ParseDeclaration();
             Accept(In);
-            ParseSingleCommand();
+            ICommandNode command = ParseSingleCommand();
+            return new LetCommandNode(declaration, command, position); 
         }
 
         /// <summary>
@@ -248,62 +253,68 @@ namespace Compiler.SyntacticAnalysis
         /// <summary>
         /// Parses a declaration
         /// </summary>
-        private void ParseDeclaration()
+        /// <returns>AST of a single deceleration or sequential</returns>
+        private IDeclarationNode ParseDeclaration()
         {
             Debugger.Write("Parsing Declaration");
-            ParseSingleDeclaration();
+            List<IDeclarationNode> declarations = new List<IDeclarationNode>();
+            declarations.Add(ParseSingleDeclaration());
             while (CurrentToken.Type == Semicolon)
             {
                 Accept(Semicolon);
-                ParseSingleDeclaration();
+                declarations.Add(ParseSingleDeclaration());
             }
+            return declarations.Count == 1 ? declarations[0] : new SequentialDeclarationNode(declarations);
         }
 
         /// <summary>
         /// Parses a single declaration
         /// </summary>
-        private void ParseSingleDeclaration()
+        /// <returns>AST of a Const or Var deceleration</returns>
+        private IDeclarationNode ParseSingleDeclaration()
         {
             Debugger.Write("Parsing Single Declaration");
             switch (CurrentToken.Type)
             {
                 case Const:
                     Debugger.Write("Parsing Const");
-                    ParseConstDeclaration();
-                    break;
+                    return ParseConstDeclaration()
                 case Var:
                     Debugger.Write("Parsing Var");
-                    ParseVarDeclaration();
-                    break;
+                    return ParseVarDeclaration();
                 default:
                     Debugger.Write($"Failed to accepted: {CurrentToken}, Expected: 'Const' or 'Var'");
                     Reporter.NewError(CurrentToken, $"Expected 'Const' or 'Var', found: '{CurrentToken.Type}'");
-                    break;
+                    return new ErrorNode(CurrentToken.Position);
             }
         }
 
         /// <summary>
         /// Parse Const Deceleration 
         /// </summary>
-        private void ParseConstDeclaration()
+        private IDeclarationNode ParseConstDeclaration()
         {
             Debugger.Write("Parsing Const Declaration");
+            Position position = CurrentToken.tokenStartPosition;
             Accept(Const);
-            ParseIdentifier();
+            IdentifierNode identifier = ParseIdentifier();
             Accept(Is);
-            ParseExpression();
+            IExpressionNode expression = ParseExpression();
+            return new ConstDeclarationNode(identifier, expression, position);
         }
 
         /// <summary>
         /// Parse Var Declaration
         /// </summary>
-        private void ParseVarDeclaration()
+        private IDeclarationNode ParseVarDeclaration()
         {
             Debugger.Write("Parsing Var Declaration");
+            Position position = CurrentToken.tokenStartPosition;
             Accept(Var);
-            ParseIdentifier();
+            IdentifierNode identifier = ParseIdentifier();
             Accept(Is);
-            ParseTypeDenoter();
+            TypeDenoterNode type = ParseTypeDenoter();
+            return new VarDeclarationNode(identifier, type, position);
         }
 
         /// <summary>
@@ -329,7 +340,6 @@ namespace Compiler.SyntacticAnalysis
         /// <returns>AST of a Primary expression</returns>
         private IExpressionNode ParsePrimaryExpression()
         {
-            // TODO Back here
             Debugger.Write("Parsing Primary Expression");
             switch (CurrentToken.Type)
             {
@@ -353,22 +363,24 @@ namespace Compiler.SyntacticAnalysis
         /// <summary>
         /// Parses a unary expression
         /// </summary>
-        private IExpressionNode ParseUnaryExpression()
+        /// <returns>AST of a Unary expression</returns>
+        private UnaryExpressionNode ParseUnaryExpression()
         {
             Debugger.Write("Parsing Unary Expression");
-            ParseOperator();
-            ParsePrimaryExpression();
+            return new UnaryExpressionNode(ParseOperator(), ParsePrimaryExpression()); 
         }
 
         /// <summary>
         /// Parses a Bracket Expression
         /// </summary>
-        private void ParseBracketExpression()
+        /// <returns>AST of an expression</returns>
+        private IExpressionNode ParseBracketExpression()
         {
             Debugger.Write("Parsing Bracket Expression");
             Accept(LeftBracket);
-            ParseExpression();
+            IExpressionNode expression =  ParseExpression();
             Accept(RightBracket);
+            return expression; 
         }
 
         /// <summary>
