@@ -1,6 +1,7 @@
 ﻿using Compiler.IO;
 using Compiler.Tokenization;
 using Compiler.SyntacticAnalysis;
+using Compiler.SemanticAnalysis;
 using Compiler.Nodes;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,12 @@ namespace Compiler
         /// <summary>
         /// The parser
         /// </summary>
-        public Parser Parser { get; } 
+        public Parser Parser { get; }
+
+        /// <summary>
+        /// The Deceleration Identifier
+        /// </summary>
+        public DeclarationIdentifier Identifier { get; }
 
         /// <summary>
         /// Creates a new compiler
@@ -43,7 +49,8 @@ namespace Compiler
             Reporter = new ErrorReporter();
             Reader = new FileReader(inputFile);
             Tokenizer = new Tokenizer(Reader, Reporter);
-            Parser = new Parser(Reporter); 
+            Parser = new Parser(Reporter);
+            Identifier = new DeclarationIdentifier(Reporter);
         }
 
         /// <summary>
@@ -54,10 +61,22 @@ namespace Compiler
             // Tokenize
             Write("Tokenising...\n");
             List<Token> tokens = Tokenizer.GetAllTokens();
-            ProgramNode tree = Parser.Parse(tokens);
-            WriteLine(TreePrinter.ToString(tree));
             if (Reporter.HasErrors) return;
             WriteLine("Done");
+
+            // Parse
+            Write("Parsing...");
+            ProgramNode tree = Parser.Parse(tokens);
+            if (Reporter.HasErrors) return;
+            WriteLine("Done");
+
+            // Identify
+            Write("Identifying...");
+            Identifier.PerformIdentification(tree);
+            if (Reporter.HasErrors) return;
+            WriteLine("Done");
+
+            WriteLine(TreePrinter.ToString(tree)); // TODO Remove!
         }
 
         /// <summary>
@@ -66,10 +85,7 @@ namespace Compiler
         private void WriteFinalMessage()
         {
             WriteLine($"Finished \nErrors reported:{Reporter.NumberOfErrors}");
-            
-
-                WriteLine(Reporter.ToString());
-
+            WriteLine(Reporter.ToString());
         }
 
         /// <summary>
