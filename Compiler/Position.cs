@@ -6,7 +6,11 @@ namespace Compiler
     /// A position in a file
     /// </summary>
     public class Position
-    {
+    {   
+        /// <summary>
+        /// A constant to use as the position of system defined items
+        /// </summary>
+        public static Position BuiltIn { get; } = new Position(-1, -1);
         /// <summary>
         /// line which the token is on in source code
         /// </summary>
@@ -29,12 +33,9 @@ namespace Compiler
         /// <inheritDoc />
         public override string ToString()
         {
-            return $"LineNumber={LineNumber}, LinePosition=\"{LinePosition}\", ";
+            return (this == BuiltIn) ? "System defined": $"LineNumber={LineNumber}, LinePosition=\"{LinePosition}\", ";
         }
 
-        /// <summary>
-        /// A constant to use as the position of system defined items
-        /// </summary>
-        public static Position BuiltIn { get; } = new Position(-1, -1);
+ 
     }
 }
