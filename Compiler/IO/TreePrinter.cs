@@ -186,6 +186,12 @@ namespace Compiler.IO
                 case LetCommandNode letCommand:
                     return NodeToString(lastChild, letCommand, letCommand.Declaration, letCommand.Command);
 
+                case LoopCommandNode loopCommand:
+                    return NodeToString(lastChild, loopCommand, loopCommand.Command, loopCommand.Expression, loopCommand.LoopCommand);
+
+                case QuickIfCommandNode quickIfCommand:
+                    return NodeToString(lastChild, quickIfCommand, quickIfCommand.Expression, quickIfCommand.ThenCommand);
+
                 case SequentialCommandNode sequentialCommand:
                     return NodeToString(lastChild, sequentialCommand, sequentialCommand.Commands.ToArray());
 
@@ -208,6 +214,9 @@ namespace Compiler.IO
                 // Expressions
                 case BinaryExpressionNode binaryExpression:
                     return NodeToString(lastChild, binaryExpression, binaryExpression.LeftExpression, binaryExpression.Op, binaryExpression.RightExpression);
+
+                case CallExpressionNode callExpression:
+                    return NodeToString(lastChild, callExpression, callExpression.Identifier, callExpression.Parameter);
 
                 case CharacterExpressionNode characterExpression:
                     return NodeToString(lastChild, characterExpression, characterExpression.CharLit);
