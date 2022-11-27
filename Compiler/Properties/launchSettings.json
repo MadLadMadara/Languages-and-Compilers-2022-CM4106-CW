@@ -19,6 +19,11 @@
       "commandName": "Project",
       "commandLineArgs": "test_scanner/chars_and _unknown_error_scanner.tri",
       "workingDirectory": "../"
+    },
+    "Char_check_SQR": {
+      "commandName": "Project",
+      "commandLineArgs": "SQR_example_char.tri",
+      "workingDirectory": "../"
     }
   }
 }
