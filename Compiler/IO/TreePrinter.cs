@@ -165,7 +165,7 @@ namespace Compiler.IO
         /// <param name="lastChild">Whether or not this node is the last child at each parent level of the tree</param>
         /// <param name="node">The node to print</param>
         /// <returns>A string representation of the subtree rooted at the given node</returns>
-        private static string ToString(ImmutableList<bool> lastChild, IAbstractSyntaxTreeNode node)
+        private static string ToString(ImmutableList<bool> lastChild, IAbstractSyntaxTreeNode node) // TODO  update this to handle loop, quick if and call command
         {
             switch (node)
             {

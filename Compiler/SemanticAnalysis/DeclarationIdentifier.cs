@@ -109,6 +109,27 @@ namespace Compiler.SemanticAnalysis
         }
 
         /// <summary>
+        /// Carries out identification on a loop command node
+        /// </summary>
+        /// <param name="loopCommand"></param>
+        private void PerformIdentificationOnLoopCommand(LoopCommandNode loopCommand)
+        {
+            PerformIdentification(loopCommand.Command);
+            PerformIdentification(loopCommand.Expression);
+            PerformIdentification(loopCommand.LoopCommand);
+        }
+
+        /// <summary>
+        ///  Carries out identification on a QuickIf command node
+        /// </summary>
+        /// <param name="QuickIfCommand"></param>
+        private void PerformIdentificationOnQuickIfCommand(QuickIfCommandNode QuickIfCommand)
+        {
+            PerformIdentification(QuickIfCommand.Expression);
+            PerformIdentification(QuickIfCommand.ThenCommand);
+        }
+
+        /// <summary>
         /// Carries out identification on an if command node
         /// </summary>
         /// <param name="ifCommand">The node to perform identification on</param>
@@ -198,6 +219,17 @@ namespace Compiler.SemanticAnalysis
         }
 
         /// <summary>
+        /// Carries out identification on a call expression node
+        /// </summary>
+        /// <param name="callExpression"></param>
+        private void PerformIdentificationOnCallExpression(CallExpressionNode callExpression)
+        {
+            PerformIdentification(callExpression.Identifier);
+            PerformIdentification(callExpression.Parameter);
+        }
+
+
+        /// <summary>
         /// Carries out identification on a character expression node
         /// </summary>
         /// <param name="characterExpression">The node to perform identification on</param>
@@ -212,7 +244,7 @@ namespace Compiler.SemanticAnalysis
         /// <param name="idExpression">The node to perform identification on</param>
         private void PerformIdentificationOnIdExpression(IdExpressionNode idExpression)
         {
-            PerformIdentification((idExpression.Identifier);
+            PerformIdentification(idExpression.Identifier);
         }
 
         /// <summary>

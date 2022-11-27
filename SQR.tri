@@ -20,5 +20,5 @@ in
 			put(c)
 		wend;
 
-		? n == MAX => put(c);
+		? getint(n) < MAX => put(c);
 	end
