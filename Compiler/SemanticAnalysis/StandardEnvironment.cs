@@ -66,7 +66,7 @@ namespace Compiler.SemanticAnalysis
         public static BinaryOperationDeclarationNode Multiply { get; } = new BinaryOperationDeclarationNode("*", MULT, IntegerType, IntegerType, IntegerType);
         public static BinaryOperationDeclarationNode Divide { get; } = new BinaryOperationDeclarationNode("/", DIV, IntegerType, IntegerType, IntegerType);
         
-        public static UnaryOperationDeclarationNode Not { get; } = new UnaryOperationDeclarationNode("\\", NOT, BooleanType, BooleanType);
+        public static UnaryOperationDeclarationNode Not { get; } = new UnaryOperationDeclarationNode("!", NOT, BooleanType, BooleanType);
 
         public static FunctionDeclarationNode Chr { get; } = new FunctionDeclarationNode("chr", ID, CharType, (IntegerType, false));
         public static FunctionDeclarationNode Ord { get; } = new FunctionDeclarationNode("ord", ID, IntegerType, (CharType, false));
