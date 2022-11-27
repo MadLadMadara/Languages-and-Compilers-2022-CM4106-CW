@@ -181,7 +181,8 @@ namespace Compiler.SemanticAnalysis
         private void PerformIdentificationOnConstDeclaration(ConstDeclarationNode constDeclaration)
         {
             Token T = constDeclaration.Identifier.IdentifierToken;
-            bool success = SymbolTable.Enter(T.Spelling, constDeclaration); // TODO Need error checking!
+            bool success = SymbolTable.Enter(T.Spelling, constDeclaration);
+            if (!success) Reporter.NewError(T, $"Const '{T.Spelling}' already exists and has been declared previously in the program");
             PerformIdentification(constDeclaration.Expression);
         }
 
@@ -199,11 +200,12 @@ namespace Compiler.SemanticAnalysis
         /// Carries out identification on a var declaration node
         /// </summary>
         /// <param name="varDeclaration">The node to perform identification on</param>
-        private void PerformIdentificationOnVarDeclaration(VarDeclarationNode varDeclaration)
+        private void PerformIdentificationOnVarDeclaration(VarDeclarationNode varDeclaration) 
         {
             PerformIdentification(varDeclaration.TypeDenoter);
             Token T = varDeclaration.Identifier.IdentifierToken; 
             bool success = SymbolTable.Enter(T.Spelling, varDeclaration);
+            if (!success) Reporter.NewError(T, $"Variable '{T.Spelling}' already exists and has been declared previously in the program");
 
         }
 
@@ -318,8 +320,9 @@ namespace Compiler.SemanticAnalysis
         /// <param name="identifier">The node to perform identification on</param>
         private void PerformIdentificationOnIdentifier(IdentifierNode identifier)
         {
-            IDeclarationNode declaration = SymbolTable.Retrieve(identifier.IdentifierToken.Spelling); // TODO Need error handling if null returns
+            IDeclarationNode declaration = SymbolTable.Retrieve(identifier.IdentifierToken.Spelling);
             identifier.Declaration = declaration;
+            if (declaration == null) Reporter.NewError(identifier, $"Identifier '{identifier.IdentifierToken.Spelling}' has not been declared previously and dose not exist");
         }
 
         /// <summary>
@@ -336,8 +339,9 @@ namespace Compiler.SemanticAnalysis
         /// <param name="operation">The node to perform identification on</param>
         private void PerformIdentificationOnOperator(OperatorNode operation)
         {
-            IDeclarationNode declaration = SymbolTable.Retrieve(operation.OperatorToken.Spelling); // TODO Error check if null is returned
+            IDeclarationNode declaration = SymbolTable.Retrieve(operation.OperatorToken.Spelling);
             operation.Declaration = declaration;
+            if (declaration == null) Reporter.NewError(operation, $"Operator '{operation.OperatorToken.Spelling}' is invalid and dose not exist");
         }
     }
 }

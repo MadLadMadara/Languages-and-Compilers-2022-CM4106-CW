@@ -16,7 +16,7 @@ namespace Compiler.IO
         /// <summary>
         /// Token Associated with the error
         /// </summary>
-        public Token Token { get; private set; }
+        public Position Position { get; private set; }
         /// <summary>
         /// message associated with the error
         /// </summary>
@@ -26,9 +26,9 @@ namespace Compiler.IO
         /// </summary>
         /// <param name="token">Token that the error occurred on</param>
         /// <param name="message">Error message</param>
-        public Error(Token token, string message)
+        public Error(Position position, string message)
         {
-            Token = token;
+            Position = position;
             Message = message; 
         }
         /// <summary>
@@ -38,7 +38,7 @@ namespace Compiler.IO
         /// <returns>A formated error message</returns>
         public override string ToString()
         {
-            return $"Error: {Message}\nOn: {Token.ToString()}.";
+            return $"Error: {Message}\nOn: {Position.ToString()}.";
         }
     }
 }

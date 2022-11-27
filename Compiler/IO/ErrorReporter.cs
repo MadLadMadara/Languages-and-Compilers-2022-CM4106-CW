@@ -1,4 +1,5 @@
-﻿using Compiler.Tokenization;
+﻿using Compiler.Nodes;
+using Compiler.Tokenization;
 using System;
 using System.Collections.Generic;
 
@@ -10,22 +11,27 @@ namespace Compiler.IO
     /// </summary>
     public class ErrorReporter
     {
+
         /// <summary>
         /// List of errors that have been reported
         /// </summary>
         private List<Error> Errors;
+
         /// <summary>
         /// Returns a read-only copy of the Errors List property 
         /// </summary>
         public IReadOnlyList<Object> ListOfErrors => Errors.AsReadOnly();
+
         /// <summary>
         /// The number of errors that occurred
         /// </summary>
         public int NumberOfErrors => Errors.Count;
+
         /// <summary>
         /// Whether or not any errors have been encountered
         /// </summary>
         public bool HasErrors { get; private set; }
+
         /// <summary>
         /// Constrictor, initialize ErrorTokens to new token list and HasErrors to false.
         /// </summary>
@@ -34,16 +40,29 @@ namespace Compiler.IO
             Errors = new List<Error>();
             HasErrors = false;
         }
+
         /// <summary>
-        /// Reports a new error to be added to the error list
+        /// Reports a new error to be added to the error list from a token
         /// </summary>
         /// <param name="token">Token that the error occurred on</param>
         /// <param name="message">Description of the error</param>
         public void NewError(Token token, string message)
         {
             HasErrors = true;
-            Errors.Add(new Error(token, message));
+            Errors.Add(new Error(token.Position, message));
         }
+
+        /// <summary>
+        /// Reports a new error to be added to the error list from a AST Node
+        /// </summary>
+        /// <param name="node">AST node that the error occurred on</param>
+        /// <param name="message">Description of the error</param>
+        public void NewError(IAbstractSyntaxTreeNode node, string message)
+        {
+            HasErrors = true;
+            Errors.Add(new Error(node.Position, message));
+        }
+
         /// <summary>
         /// Creates a formated output of the list of errors that have been add via the NewError method
         /// </summary>

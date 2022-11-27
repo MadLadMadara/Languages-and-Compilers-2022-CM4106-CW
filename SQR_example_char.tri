@@ -2,6 +2,7 @@
 let
 	const MAX ~ 10;
 	var n ~ Integer
+
 in
 	begin
 		put({e}); put({n}); put({t}); put({e}); put({r}); put({ });
