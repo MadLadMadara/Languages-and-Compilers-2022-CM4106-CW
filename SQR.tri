@@ -9,9 +9,10 @@ in
 		n ~ 1;
 
 		put(c);
-
+		getint(var n);
+		eof();
 		loop 
-			putint(n)
+			getint(var n)
 		while (n < MAX)
 			n ~ n + 1
 		repeat;
@@ -20,5 +21,5 @@ in
 			put(c)
 		wend;
 
-		? getint(n) < MAX => put(c);
+		? eof() = ord({T}) => put(c);
 	end

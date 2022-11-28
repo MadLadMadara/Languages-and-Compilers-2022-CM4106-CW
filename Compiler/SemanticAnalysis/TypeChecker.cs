@@ -1,6 +1,7 @@
 ﻿using Compiler.IO;
 using Compiler.Nodes;
 using System.Reflection;
+using System.Xml.Linq;
 using static System.Reflection.BindingFlags;
 
 namespace Compiler.SemanticAnalysis
@@ -104,6 +105,7 @@ namespace Compiler.SemanticAnalysis
         {
             PerformTypeChecking(callCommand.Identifier);
             PerformTypeChecking(callCommand.Parameter);
+
             if (!(callCommand.Identifier.Declaration is FunctionDeclarationNode functionDeclaration))
             {
                 // Error: Identifier is not a function
@@ -113,6 +115,7 @@ namespace Compiler.SemanticAnalysis
                 if (!(callCommand.Parameter is BlankParameterNode))
                 {
                     // Error: function takes no arguments but is called with one
+                    Debugger.Write("Error: function takes no arguments but is called with one");
                 }
             }
             else
@@ -120,22 +123,26 @@ namespace Compiler.SemanticAnalysis
                 if (callCommand.Parameter is BlankParameterNode)
                 {
                     // Error: function takes an argument but is called without one
+                    Debugger.Write("Error: function takes an argument but is called without one");
                 }
                 else
                 {
                     if (GetArgumentType(functionDeclaration.Type, 0) != callCommand.Parameter.Type)
                     {
                         // Error: Function called with parameter of the wrong type
+                        Debugger.Write("Error: Function called with parameter of the wrong type");
                     }
                     if (ArgumentPassedByReference(functionDeclaration.Type, 0) && !(callCommand.Parameter is VarParameterNode))
                     {
                         // Error: Function requires a var parameter but has been given an expression parameter
+                        Debugger.Write("Error: Function requires a var parameter but has been given an expression parameter");
                     }
                     if (ArgumentPassedByReference(functionDeclaration.Type, 0))
                     {
                         if (!(callCommand.Parameter is VarParameterNode))
                         {
                             // Error: Function requires a var parameter but has been given an expression parameter
+                            Debugger.Write("Error: Function requires a var parameter but has been given an expression parameter");
                         }
                     }
                     else
@@ -143,9 +150,11 @@ namespace Compiler.SemanticAnalysis
                         if (!(callCommand.Parameter is ExpressionParameterNode))
                         {
                             // Error: Function requires an expression parameter but has been given a var parameter
+                            Debugger.Write("Error: Function requires an expression parameter but has been given a var parameter");
                         }
                     }
                 }
+
             }
         }
 
@@ -296,6 +305,79 @@ namespace Compiler.SemanticAnalysis
                 }
                 binaryExpression.Type = GetReturnType(opDeclaration.Type);
             }
+        }
+
+        /// <summary>
+        /// Carries out type checking on a call expression node
+        /// </summary>
+        /// <param name="callCommand">The node to perform type checking on</param>
+        private void PerformTypeCheckingOnCallExpression(CallExpressionNode callExpression)
+        {
+            PerformTypeChecking(callExpression.Identifier);
+            PerformTypeChecking(callExpression.Parameter);
+            
+            if (!(callExpression.Identifier.Declaration is FunctionDeclarationNode functionDeclaration))
+            {
+                // Error: Identifier is not a function
+                Debugger.Write("Identifier is not a function");
+
+            }
+            else
+            {
+                if (GetReturnType(functionDeclaration.Type) == StandardEnvironment.VoidType)
+                {
+                    // Error: Function has no return type
+                    Debugger.Write("Error: Function has no return type");
+                }
+                else if (GetNumberOfArguments(functionDeclaration.Type) == 0)
+                {
+                    Debugger.Write(GetReturnType(functionDeclaration.Type).ToString());
+                    if (!(callExpression.Parameter is BlankParameterNode))
+                    {
+                        // Error: function takes no arguments but is called with one
+                        Debugger.Write("Error: function takes no arguments but is called with one");
+                    }
+                }
+                else
+                {
+                    Debugger.Write(GetReturnType(functionDeclaration.Type).ToString());
+                    if (callExpression.Parameter is BlankParameterNode)
+                    {
+                        // Error: function takes an argument but is called without one
+                        Debugger.Write("Error: function takes an argument but is called without one");
+                    }
+                    else
+                    {
+                        if (GetArgumentType(functionDeclaration.Type, 0) != callExpression.Parameter.Type)
+                        {
+                            // Error: Function called with parameter of the wrong type
+                            Debugger.Write("Error: Function called with parameter of the wrong type");
+                        }
+                        if (ArgumentPassedByReference(functionDeclaration.Type, 0) && !(callExpression.Parameter is VarParameterNode))
+                        {
+                            // Error: Function requires a var parameter but has been given an expression parameter
+                            Debugger.Write("Error: Function requires a var parameter but has been given an expression parameter");
+                        }
+                        if (ArgumentPassedByReference(functionDeclaration.Type, 0))
+                        {
+                            if (!(callExpression.Parameter is VarParameterNode))
+                            {
+                                // Error: Function requires a var parameter but has been given an expression parameter
+                                Debugger.Write("Error: Function requires a var parameter but has been given an expression parameter");
+                            }
+                        }
+                        else
+                        {
+                            if (!(callExpression.Parameter is ExpressionParameterNode))
+                            {
+                                // Error: Function requires an expression parameter but has been given a var parameter
+                                Debugger.Write("Error: Function requires an expression parameter but has been given a var parameter");
+                            }
+                        }
+                    }
+                }
+                callExpression.Type = GetReturnType(functionDeclaration.Type);
+            }            
         }
 
         /// <summary>
