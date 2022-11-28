@@ -41,6 +41,11 @@ namespace Compiler
         public DeclarationIdentifier Identifier { get; }
 
         /// <summary>
+        /// The Type Checker 
+        /// </summary>
+        public TypeChecker Checker { get; }
+
+        /// <summary>
         /// Creates a new compiler
         /// </summary>
         /// <param name="inputFile">The file containing the source code</param>
@@ -51,6 +56,7 @@ namespace Compiler
             Tokenizer = new Tokenizer(Reader, Reporter);
             Parser = new Parser(Reporter);
             Identifier = new DeclarationIdentifier(Reporter);
+            Checker = new TypeChecker(Reporter);
         }
 
         /// <summary>
@@ -65,14 +71,20 @@ namespace Compiler
             WriteLine("Done");
 
             // Parse
-            Write("Parsing...");
+            Write("Parsing...\n");
             ProgramNode tree = Parser.Parse(tokens);
             if (Reporter.HasErrors) return;
             WriteLine("Done");
 
             // Identify
-            Write("Identifying...");
+            Write("Identifying...\n");
             Identifier.PerformIdentification(tree);
+            if (Reporter.HasErrors) return;
+            WriteLine("Done");
+
+            // Type check
+            Write("Type Checking...\n");
+            Checker.PerformTypeChecking(tree);
             if (Reporter.HasErrors) return;
             WriteLine("Done");
 
