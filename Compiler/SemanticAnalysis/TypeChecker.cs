@@ -150,6 +150,35 @@ namespace Compiler.SemanticAnalysis
         }
 
         /// <summary>
+        /// Carries out type checking on a loop command node
+        /// </summary>
+        /// <param name="loopCommand">The node to perform type checking on</param>
+        private void PerformTypeCheckingOnLoopCommand(LoopCommandNode loopCommand) // TODO: Change from lab
+        {
+            PerformTypeChecking(loopCommand.Command);
+            PerformTypeChecking(loopCommand.Expression);
+            PerformTypeChecking(loopCommand.LoopCommand);
+            if (loopCommand.Expression.Type != StandardEnvironment.BooleanType)
+            {
+                // Error: expression needs to be a boolean
+            }
+        }
+
+        /// <summary>
+        /// Carries out type checking on a quick if command node
+        /// </summary>
+        /// <param name="quickIfCommand">The node to perform type checking on</param>
+        private void PerformTypeCheckingOnQuickIfCommand(QuickIfCommandNode quickIfCommand) // TODO: Change from lab
+        {
+            PerformTypeChecking(quickIfCommand.Expression);
+            PerformTypeChecking(quickIfCommand.ThenCommand);
+            if (quickIfCommand.Expression.Type != StandardEnvironment.BooleanType)
+            {
+                // Error: expression needs to be a boolean
+            }
+        }
+
+        /// <summary>
         /// Carries out type checking on an if command node
         /// </summary>
         /// <param name="ifCommand">The node to perform type checking on</param>
