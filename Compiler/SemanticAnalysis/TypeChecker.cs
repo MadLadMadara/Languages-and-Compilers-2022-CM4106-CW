@@ -1,5 +1,6 @@
 ﻿using Compiler.IO;
 using Compiler.Nodes;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Xml.Linq;
 using static System.Reflection.BindingFlags;
@@ -82,10 +83,12 @@ namespace Compiler.SemanticAnalysis
             if (!(assignCommand.Identifier.Declaration is IVariableDeclarationNode varDeclaration))
             {
                 // Error - identifier is not a variable
+                Reporter.NewError(assignCommand.Identifier.Declaration, "Identifier is not a variable"); 
             }
             else if (varDeclaration.EntityType != assignCommand.Expression.Type)
             {
                 // Error - expression is wrong type for the variable
+                Reporter.NewError(assignCommand.Expression, "Expression is wrong type for the variable");
             }
         }
 
@@ -109,13 +112,14 @@ namespace Compiler.SemanticAnalysis
             if (!(callCommand.Identifier.Declaration is FunctionDeclarationNode functionDeclaration))
             {
                 // Error: Identifier is not a function
+                Reporter.NewError(callCommand.Identifier.Declaration, "Identifier is not a function");
             }
             else if (GetNumberOfArguments(functionDeclaration.Type) == 0)
             {
                 if (!(callCommand.Parameter is BlankParameterNode))
                 {
                     // Error: function takes no arguments but is called with one
-                    Debugger.Write("Error: function takes no arguments but is called with one");
+                    Reporter.NewError(callCommand.Parameter, "Function takes no arguments but is called with one");
                 }
             }
             else
@@ -123,26 +127,26 @@ namespace Compiler.SemanticAnalysis
                 if (callCommand.Parameter is BlankParameterNode)
                 {
                     // Error: function takes an argument but is called without one
-                    Debugger.Write("Error: function takes an argument but is called without one");
+                    Reporter.NewError(callCommand.Parameter, "Function takes an argument but is called without one");
                 }
                 else
                 {
                     if (GetArgumentType(functionDeclaration.Type, 0) != callCommand.Parameter.Type)
                     {
                         // Error: Function called with parameter of the wrong type
-                        Debugger.Write("Error: Function called with parameter of the wrong type");
+                        Reporter.NewError(callCommand.Parameter, "Function called with parameter of the wrong type");
                     }
                     if (ArgumentPassedByReference(functionDeclaration.Type, 0) && !(callCommand.Parameter is VarParameterNode))
                     {
                         // Error: Function requires a var parameter but has been given an expression parameter
-                        Debugger.Write("Error: Function requires a var parameter but has been given an expression parameter");
+                        Reporter.NewError(callCommand.Parameter, "Function requires a var parameter but has been given an expression parameter");
                     }
                     if (ArgumentPassedByReference(functionDeclaration.Type, 0))
                     {
                         if (!(callCommand.Parameter is VarParameterNode))
                         {
                             // Error: Function requires a var parameter but has been given an expression parameter
-                            Debugger.Write("Error: Function requires a var parameter but has been given an expression parameter");
+                            Reporter.NewError(callCommand.Parameter, "Function requires a var parameter but has been given an expression parameter");
                         }
                     }
                     else
@@ -150,7 +154,7 @@ namespace Compiler.SemanticAnalysis
                         if (!(callCommand.Parameter is ExpressionParameterNode))
                         {
                             // Error: Function requires an expression parameter but has been given a var parameter
-                            Debugger.Write("Error: Function requires an expression parameter but has been given a var parameter");
+                            Reporter.NewError(callCommand.Parameter, "Function requires an expression parameter but has been given a var parameter");
                         }
                     }
                 }
@@ -170,6 +174,7 @@ namespace Compiler.SemanticAnalysis
             if (loopCommand.Expression.Type != StandardEnvironment.BooleanType)
             {
                 // Error: expression needs to be a boolean
+                Reporter.NewError(loopCommand.Expression, "Expression needs to be a boolean");
             }
         }
 
@@ -184,6 +189,7 @@ namespace Compiler.SemanticAnalysis
             if (quickIfCommand.Expression.Type != StandardEnvironment.BooleanType)
             {
                 // Error: expression needs to be a boolean
+                Reporter.NewError(quickIfCommand.Expression, "Expression needs to be a boolean");
             }
         }
 
@@ -199,6 +205,7 @@ namespace Compiler.SemanticAnalysis
             if (ifCommand.Expression.Type != StandardEnvironment.BooleanType)
             {
                 // Error: expression needs to be a boolean
+                Reporter.NewError(ifCommand.Expression, "Expression needs to be a boolean");
             }
         }
 
@@ -233,6 +240,7 @@ namespace Compiler.SemanticAnalysis
             if (whileCommand.Expression.Type != StandardEnvironment.BooleanType)
             {
                 // Error: expression needs to be a boolean
+                Reporter.NewError(whileCommand.Expression, "Expression needs to be a boolean");
             }
         }
 
@@ -282,6 +290,7 @@ namespace Compiler.SemanticAnalysis
             if (!(binaryExpression.Op.Declaration is BinaryOperationDeclarationNode opDeclaration))
             {
                 // Error: operator is not a binary operator
+                Reporter.NewError(binaryExpression.Op.Declaration, "Operator is not a binary operator");
             }
             else
             {
@@ -290,6 +299,7 @@ namespace Compiler.SemanticAnalysis
                     if (binaryExpression.LeftExpression.Type != binaryExpression.RightExpression.Type)
                     {
                         // Error: left and right hand side arguments not the same type
+                        Reporter.NewError(binaryExpression, "Left and right hand side arguments in binary expression not of the same type");
                     }
                 }
                 else
@@ -297,10 +307,12 @@ namespace Compiler.SemanticAnalysis
                     if (GetArgumentType(opDeclaration.Type, 0) != binaryExpression.LeftExpression.Type)
                     {
                         // Error: Left hand expression is wrong type
+                        Reporter.NewError(binaryExpression.LeftExpression, "Left hand expression is wrong type");
                     }
                     if (GetArgumentType(opDeclaration.Type, 1) != binaryExpression.RightExpression.Type)
                     {
                         // Error: Right hand expression is wrong type
+                        Reporter.NewError(binaryExpression.LeftExpression, "Right hand expression is wrong type");
                     }
                 }
                 binaryExpression.Type = GetReturnType(opDeclaration.Type);
@@ -310,7 +322,7 @@ namespace Compiler.SemanticAnalysis
         /// <summary>
         /// Carries out type checking on a call expression node
         /// </summary>
-        /// <param name="callCommand">The node to perform type checking on</param>
+        /// <param name="callExpression">The node to perform type checking on</param>
         private void PerformTypeCheckingOnCallExpression(CallExpressionNode callExpression)
         {
             PerformTypeChecking(callExpression.Identifier);
@@ -319,7 +331,7 @@ namespace Compiler.SemanticAnalysis
             if (!(callExpression.Identifier.Declaration is FunctionDeclarationNode functionDeclaration))
             {
                 // Error: Identifier is not a function
-                Debugger.Write("Identifier is not a function");
+                Reporter.NewError(callExpression.Identifier.Declaration, "Identifier is not a function");
 
             }
             else
@@ -327,15 +339,14 @@ namespace Compiler.SemanticAnalysis
                 if (GetReturnType(functionDeclaration.Type) == StandardEnvironment.VoidType)
                 {
                     // Error: Function has no return type
-                    Debugger.Write("Error: Function has no return type");
+                    Reporter.NewError(functionDeclaration, "Function has no return type, expression call must have a return type");
                 }
                 else if (GetNumberOfArguments(functionDeclaration.Type) == 0)
                 {
-                    Debugger.Write(GetReturnType(functionDeclaration.Type).ToString());
                     if (!(callExpression.Parameter is BlankParameterNode))
                     {
-                        // Error: function takes no arguments but is called with one
-                        Debugger.Write("Error: function takes no arguments but is called with one");
+                        // Error: function takes no arguments but is called with 
+                        Reporter.NewError(callExpression.Parameter, "Function takes no arguments but is called with one");
                     }
                 }
                 else
@@ -343,27 +354,27 @@ namespace Compiler.SemanticAnalysis
                     Debugger.Write(GetReturnType(functionDeclaration.Type).ToString());
                     if (callExpression.Parameter is BlankParameterNode)
                     {
-                        // Error: function takes an argument but is called without one
-                        Debugger.Write("Error: function takes an argument but is called without one");
+                        // Error: function takes an argument but is called without 
+                        Reporter.NewError(callExpression.Parameter, "Function takes an argument but is called without");
                     }
                     else
                     {
                         if (GetArgumentType(functionDeclaration.Type, 0) != callExpression.Parameter.Type)
                         {
                             // Error: Function called with parameter of the wrong type
-                            Debugger.Write("Error: Function called with parameter of the wrong type");
+                            Reporter.NewError(callExpression.Parameter, "Function called with parameter of the wrong type");
                         }
                         if (ArgumentPassedByReference(functionDeclaration.Type, 0) && !(callExpression.Parameter is VarParameterNode))
                         {
-                            // Error: Function requires a var parameter but has been given an expression parameter
-                            Debugger.Write("Error: Function requires a var parameter but has been given an expression parameter");
+                            // Error: Function requires a var parameter but has been given an expression 
+                            Reporter.NewError(callExpression.Parameter, "Function requires a var parameter but has been given an expression");
                         }
                         if (ArgumentPassedByReference(functionDeclaration.Type, 0))
                         {
                             if (!(callExpression.Parameter is VarParameterNode))
                             {
                                 // Error: Function requires a var parameter but has been given an expression parameter
-                                Debugger.Write("Error: Function requires a var parameter but has been given an expression parameter");
+                                Reporter.NewError(callExpression.Parameter, "Function requires a var parameter but has been given an expression parameter");
                             }
                         }
                         else
@@ -371,7 +382,7 @@ namespace Compiler.SemanticAnalysis
                             if (!(callExpression.Parameter is ExpressionParameterNode))
                             {
                                 // Error: Function requires an expression parameter but has been given a var parameter
-                                Debugger.Write("Error: Function requires an expression parameter but has been given a var parameter");
+                                Reporter.NewError(callExpression.Parameter, "Function requires an expression parameter but has been given a var parameter");
                             }
                         }
                     }
@@ -400,6 +411,8 @@ namespace Compiler.SemanticAnalysis
             if (!(idExpression.Identifier.Declaration is IEntityDeclarationNode declaration))
             {
                 // Error: identifier is not a variable or constant
+                Reporter.NewError(idExpression.Identifier.Declaration, "Identifier is not a variable or constant");
+
             }
             else
                 idExpression.Type = declaration.EntityType;
@@ -426,12 +439,14 @@ namespace Compiler.SemanticAnalysis
             if (!(unaryExpression.Op.Declaration is UnaryOperationDeclarationNode opDeclaration))
             {
                 // Error: operator is not a unary operator
+                Reporter.NewError(unaryExpression.Op.Declaration, "Operator is not a unary operator");
             }
             else
             {
                 if (GetArgumentType(opDeclaration.Type, 0) != unaryExpression.Expression.Type)
                 {
                     // Error: expression is the wrong type
+                    Reporter.NewError(unaryExpression.Expression, "Expression is the wrong type");
                 }
                 unaryExpression.Type = GetReturnType(opDeclaration.Type);
             }
@@ -468,6 +483,7 @@ namespace Compiler.SemanticAnalysis
             if (!(varParameter.Identifier.Declaration is IVariableDeclarationNode varDeclaration))
             {
                 // Error: identifier is not a variable
+                Reporter.NewError(varParameter.Identifier.Declaration, "Identifier is not a variable");
             }
             else
                 varParameter.Type = varDeclaration.EntityType;
@@ -485,6 +501,7 @@ namespace Compiler.SemanticAnalysis
             if (!(typeDenoter.Identifier.Declaration is SimpleTypeDeclarationNode declaration))
             {
                 // Error: identifier is not a type
+                Reporter.NewError(typeDenoter.Identifier.Declaration, "Identifier is not a type");
             }
             else
                 typeDenoter.Type = declaration;
@@ -500,7 +517,8 @@ namespace Compiler.SemanticAnalysis
         {
             if (characterLiteral.Value < short.MinValue || characterLiteral.Value > short.MaxValue)
             {
-                // Error - value too big         
+                // Error - value too big
+                Reporter.NewError(characterLiteral, "Character literal value to big or small");
             }
         }
 
@@ -521,6 +539,7 @@ namespace Compiler.SemanticAnalysis
             if (integerLiteral.Value < short.MinValue || integerLiteral.Value > short.MaxValue)
             {
                 // Error - value too big
+                Reporter.NewError(integerLiteral, "Integer Literal value to big or small");
             }
         }
 
