@@ -64,6 +64,17 @@ namespace Compiler.IO
         }
 
         /// <summary>
+        /// Reports a new error to be added to the error list that dose not require a position.
+        /// These are for general errors. 
+        /// </summary>
+        /// <param name="message">Description of the error</param>
+        public void NewError(string message)
+        {
+            HasErrors = true;
+            Errors.Add(new Error(new Position(-1, -1), message));
+        }
+
+        /// <summary>
         /// Creates a formated output of the list of errors that have been add via the NewError method
         /// </summary>
         /// <returns>Formatted string of errors</returns>

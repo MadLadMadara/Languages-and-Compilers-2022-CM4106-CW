@@ -33,12 +33,13 @@ namespace Compiler.IO
         }
         /// <summary>
         /// A formated error message of this error as 
-        /// Formatting is as follows "Error:{Message}, At:{Token.ToString()}"
+        /// Formatting is as follows "Error:{Message}, On:{Token.ToString()}"
+        /// if error has a position of -1, -1 then simply return the message
         /// </summary>
         /// <returns>A formated error message</returns>
         public override string ToString()
         {
-            return $"Error: {Message}\nOn: {Position.ToString()}.";
+            return (Position.LineNumber != -1) ? $"Error: {Message}\nOn: {Position.ToString()}." : $"Error: {Message}.";
         }
     }
 }
