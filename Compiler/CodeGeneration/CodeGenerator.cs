@@ -129,6 +129,24 @@ namespace Compiler.CodeGeneration
         }
 
         /// <summary>
+        /// Generates code for a loop command node
+        /// </summary>
+        /// <param name="whileCommand">The node to generate code for</param>
+        private void GenerateCodeForLoopCommand(LoopCommandNode loopCommand)
+        {
+            Debugger.Write("Generating code for While Command");
+            GenerateCodeFor(loopCommand.Command);
+            Address jumpAddress = code.NextAddress;
+            code.AddInstruction(OpCode.JUMP, Register.CB, 0, 0);
+            Address loopAddress = code.NextAddress;
+            GenerateCodeFor(loopCommand.LoopCommand);
+            code.PatchInstructionToJumpHere(jumpAddress);
+            GenerateCodeFor(loopCommand.Expression);
+            code.AddInstruction(OpCode.JUMPIF, Register.CB, TrueValue, loopAddress);
+            return;
+        }
+
+        /// <summary>
         /// Generates code for a quick if command node
         /// </summary>
         /// <param name="quickIfCommand"></param>
