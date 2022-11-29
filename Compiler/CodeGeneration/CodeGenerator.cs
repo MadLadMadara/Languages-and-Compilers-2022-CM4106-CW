@@ -129,6 +129,25 @@ namespace Compiler.CodeGeneration
         }
 
         /// <summary>
+        /// Generates code for a quick if command node
+        /// </summary>
+        /// <param name="quickIfCommand"></param>
+        private void GenerateCodeForQuickIfCommand(QuickIfCommandNode quickIfCommand)
+        {
+            Debugger.Write("Generating code for If Command");
+            // 1. Create the code for evaluating the expression
+            GenerateCodeFor(quickIfCommand.Expression);
+            // Remember where the following conditional jump instruction appears
+            Address ifJumpAddress = code.NextAddress;
+            // 2. Generate the conditional jump instruction with a fake address (0)
+            code.AddInstruction(OpCode.JUMPIF, Register.CB, FalseValue, 0);
+            // 3. Create the code for the then command
+            GenerateCodeFor(quickIfCommand.ThenCommand);
+            // We now know where the first jump should go to, so patch it to jump to this address
+            code.PatchInstructionToJumpHere(ifJumpAddress);
+        }
+
+        /// <summary>
         /// Generates code for an if command node
         /// </summary>
         /// <param name="ifCommand">The node to generate code for</param>

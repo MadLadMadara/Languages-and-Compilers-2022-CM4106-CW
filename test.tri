@@ -4,8 +4,5 @@ let
 	const b ~ eol() 
 in
 	begin
-		if (a = b) then
-			put({T})
-		else
-			put({F})
+		? false => put({u})
 	end
