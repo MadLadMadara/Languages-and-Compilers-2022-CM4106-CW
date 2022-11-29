@@ -32,16 +32,18 @@ namespace Compiler.Nodes
         /// </summary>
         /// <param name="name">The name of the constant</param>
         /// <param name="type">The type of the constant</param>
-        public BuiltInConstDeclarationNode(string name, SimpleTypeDeclarationNode type)
+        /// <param name="value">The value of the constant</param>
+        public BuiltInConstDeclarationNode(string name, SimpleTypeDeclarationNode type, short value)
         {
             Name = name;
             EntityType = type;
+            RuntimeEntity = new RuntimeKnownConstant(value);
         }
 
         /// <inheritDoc />
         public override string ToString()
         {
-            return $"{Name} (Built-in ${EntityType})";
+            return $"{Name} (Built-in {EntityType})";
         }
     }
 }

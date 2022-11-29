@@ -12,7 +12,7 @@
     },
     "Sqr": {
       "commandName": "Project",
-      "commandLineArgs": "SQR.tri",
+      "commandLineArgs": "SQR.tri out.tam out.txt",
       "workingDirectory": "../"
     },
     "chars_error_scanner": {
@@ -22,7 +22,7 @@
     },
     "Char_check_SQR": {
       "commandName": "Project",
-      "commandLineArgs": "SQR_example_char.tri",
+      "commandLineArgs": "SQR_example_char.tri out.tam out.txt",
       "workingDirectory": "../"
     }
   }
