@@ -277,7 +277,6 @@ namespace Compiler.SemanticAnalysis
         }
 
 
-
         /// <summary>
         /// Carries out type checking on a binary expression node
         /// </summary>
