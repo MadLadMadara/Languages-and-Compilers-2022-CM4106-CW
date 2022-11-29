@@ -298,7 +298,7 @@ namespace Compiler.SemanticAnalysis
                     if (binaryExpression.LeftExpression.Type != binaryExpression.RightExpression.Type)
                     {
                         // Error: left and right hand side arguments not the same type
-                        Reporter.NewError(binaryExpression, "Left and right hand side arguments in binary expression not of the same type");
+                        Reporter.NewError(binaryExpression, "Left and right hand side arguments in the expression are not of the same type");
                     }
                 }
                 else

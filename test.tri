@@ -4,12 +4,8 @@ let
 in
 	begin
 		a ~ 1;
-		loop 
-			put({n})
-		while ( a < 10)
-			begin 
-				a ~ a+1;
-				put({b})
-			end
-		repeat
+		if ({b} = {b}) then 
+			put({a})
+		else
+			put({b})
 	end
