@@ -1,0 +1,11 @@
+&this is an example program
+let
+	const a ~ eol();
+	const b ~ eol() 
+in
+	begin
+		if (a = b) then
+			put({T})
+		else
+			put({F})
+	end

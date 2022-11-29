@@ -102,6 +102,8 @@ namespace Compiler
             if (Reporter.HasErrors) return;
             WriteLine("Done");
 
+            WriteLine(TreePrinter.ToString(tree)); // TODO Remove!
+
             // Code generation
             Write("Generating code...");
             TargetCode targetCode = Generator.GenerateCodeFor(tree);

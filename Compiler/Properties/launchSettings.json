@@ -24,6 +24,11 @@
       "commandName": "Project",
       "commandLineArgs": "SQR_example_char.tri out.tam out.txt",
       "workingDirectory": "../"
+    },
+    "quick test": {
+      "commandName": "Project",
+      "commandLineArgs": "test.tri out.tam out.txt",
+      "workingDirectory": "../"
     }
   }
 }
